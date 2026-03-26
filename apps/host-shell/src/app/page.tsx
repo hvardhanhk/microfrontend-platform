@@ -1,6 +1,8 @@
 import { Button, Card, CardBody, CardHeader, Badge } from '@platform/ui';
 import Link from 'next/link';
 
+import { ArchitectureModal } from '@/components/architecture-modal';
+
 /**
  * Home page — static, SSG-friendly.
  * Comprehensive showcase of the microfrontend platform's architecture,
@@ -38,6 +40,7 @@ export default function HomePage() {
                 Open Dashboard
               </Button>
             </Link>
+            <ArchitectureModal />
           </div>
           <div className="mt-8 flex flex-wrap gap-x-8 gap-y-2 text-sm text-brand-200">
             <span>Next.js 15 (App Router)</span>
