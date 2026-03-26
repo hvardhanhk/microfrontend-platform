@@ -38,15 +38,18 @@ export function AppShell({ children }: { children: ReactNode }) {
 
   return (
     <div className="flex min-h-screen">
-      <Sidebar
-        isOpen={sidebarOpen}
-        onClose={() => setSidebarOpen(false)}
-        items={navItems.map((item) => ({
-          label: item.label,
-          href: item.href,
-          isActive: pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href)),
-        }))}
-      />
+      {isLoggedIn && (
+        <Sidebar
+          isOpen={sidebarOpen}
+          onClose={() => setSidebarOpen(false)}
+          items={navItems.map((item) => ({
+            label: item.label,
+            href: item.href,
+            isActive:
+              pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href)),
+          }))}
+        />
+      )}
 
       <div className="flex flex-1 flex-col">
         <Navbar
@@ -61,7 +64,7 @@ export function AppShell({ children }: { children: ReactNode }) {
               Platform
             </Link>
           }
-          onMenuClick={() => setSidebarOpen(true)}
+          onMenuClick={isLoggedIn ? () => setSidebarOpen(true) : undefined}
           actions={
             <div className="flex items-center gap-3 min-w-[120px] justify-end">
               {isLoggedIn === null ? (

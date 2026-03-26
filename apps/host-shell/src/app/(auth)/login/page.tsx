@@ -58,6 +58,11 @@ export default function LoginPage() {
               Sign In
             </Button>
           </form>
+          <div className="mt-4 rounded-md bg-blue-50 p-3 text-sm text-blue-700 dark:bg-blue-900/30 dark:text-blue-300">
+            <p className="font-medium">Demo mode</p>
+            <p className="mt-1">Sign in with any email and password, e.g.</p>
+            <p className="mt-1 font-mono text-xs">demo@example.com / password123</p>
+          </div>
         </CardBody>
       </Card>
     </div>
