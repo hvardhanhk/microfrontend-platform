@@ -1,8 +1,7 @@
 'use client';
 
-import { useEffect } from 'react';
-
 import { useFeatureFlagStore } from '@platform/shared-state';
+import { useEffect } from 'react';
 
 /**
  * Initializes feature flags on app mount.

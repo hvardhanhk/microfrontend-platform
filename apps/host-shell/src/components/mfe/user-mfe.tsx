@@ -1,11 +1,22 @@
 'use client';
 
+import { EventBus } from '@platform/event-bus';
 import {
-  Card, CardBody, Button, Input, Avatar, Badge,
-  Tabs, TabList, Tab, TabPanel, Switch, Accordion, AccordionItem,
+  Card,
+  CardBody,
+  Button,
+  Input,
+  Avatar,
+  Badge,
+  Tabs,
+  TabList,
+  Tab,
+  TabPanel,
+  Switch,
+  Accordion,
+  AccordionItem,
 } from '@platform/ui';
 import { useTheme } from '@platform/ui';
-import { EventBus } from '@platform/event-bus';
 import { formatCurrency, formatDate } from '@platform/utils';
 
 const MOCK_ORDERS = [
@@ -31,29 +42,65 @@ export default function UserMfe() {
           </div>
         </div>
         <div className="sm:ml-auto mt-4 sm:mt-0">
-          <Button variant="outline" onClick={async () => {
-            await fetch('/api/auth/logout', { method: 'POST', credentials: 'include' });
-            EventBus.publish('auth:logout', undefined);
-            window.location.href = '/login';
-          }}>Sign Out</Button>
+          <Button
+            variant="outline"
+            onClick={async () => {
+              await fetch('/api/auth/logout', { method: 'POST', credentials: 'include' });
+              EventBus.publish('auth:logout', undefined);
+              window.location.href = '/login';
+            }}
+          >
+            Sign Out
+          </Button>
         </div>
       </Card>
 
       <Tabs defaultIndex={0}>
-        <TabList><Tab>Overview</Tab><Tab>Orders</Tab><Tab>Settings</Tab></TabList>
+        <TabList>
+          <Tab>Overview</Tab>
+          <Tab>Orders</Tab>
+          <Tab>Settings</Tab>
+        </TabList>
         <TabPanel>
           <div className="grid gap-4 sm:grid-cols-3 mt-4">
-            <Card><CardBody className="text-center"><p className="text-3xl font-bold text-brand-600">{MOCK_ORDERS.length}</p><p className="text-sm text-gray-500">Total Orders</p></CardBody></Card>
-            <Card><CardBody className="text-center"><p className="text-3xl font-bold text-brand-600">{formatCurrency(MOCK_ORDERS.reduce((s, o) => s + o.total, 0))}</p><p className="text-sm text-gray-500">Total Spent</p></CardBody></Card>
-            <Card><CardBody className="text-center"><p className="text-3xl font-bold text-brand-600">4.8</p><p className="text-sm text-gray-500">Avg Rating</p></CardBody></Card>
+            <Card>
+              <CardBody className="text-center">
+                <p className="text-3xl font-bold text-brand-600">{MOCK_ORDERS.length}</p>
+                <p className="text-sm text-gray-500">Total Orders</p>
+              </CardBody>
+            </Card>
+            <Card>
+              <CardBody className="text-center">
+                <p className="text-3xl font-bold text-brand-600">
+                  {formatCurrency(MOCK_ORDERS.reduce((s, o) => s + o.total, 0))}
+                </p>
+                <p className="text-sm text-gray-500">Total Spent</p>
+              </CardBody>
+            </Card>
+            <Card>
+              <CardBody className="text-center">
+                <p className="text-3xl font-bold text-brand-600">4.8</p>
+                <p className="text-sm text-gray-500">Avg Rating</p>
+              </CardBody>
+            </Card>
           </div>
         </TabPanel>
         <TabPanel>
           <div className="mt-4 space-y-3">
             {MOCK_ORDERS.map((order) => (
               <Card key={order.id} className="flex items-center justify-between p-4">
-                <div><p className="font-medium">{order.id}</p><p className="text-sm text-gray-500">{formatDate(order.date)} · {order.items} items</p></div>
-                <div className="text-right"><p className="font-semibold">{formatCurrency(order.total)}</p><Badge variant={order.status === 'delivered' ? 'success' : 'info'}>{order.status}</Badge></div>
+                <div>
+                  <p className="font-medium">{order.id}</p>
+                  <p className="text-sm text-gray-500">
+                    {formatDate(order.date)} · {order.items} items
+                  </p>
+                </div>
+                <div className="text-right">
+                  <p className="font-semibold">{formatCurrency(order.total)}</p>
+                  <Badge variant={order.status === 'delivered' ? 'success' : 'info'}>
+                    {order.status}
+                  </Badge>
+                </div>
               </Card>
             ))}
           </div>
@@ -63,13 +110,22 @@ export default function UserMfe() {
             <Accordion>
               <AccordionItem title="Appearance">
                 <div className="flex items-center justify-between py-2">
-                  <div><p className="font-medium">Dark Mode</p><p className="text-sm text-gray-500">Toggle dark mode theme</p></div>
-                  <Switch checked={resolvedTheme === 'dark'} onChange={(checked) => setTheme(checked ? 'dark' : 'light')} />
+                  <div>
+                    <p className="font-medium">Dark Mode</p>
+                    <p className="text-sm text-gray-500">Toggle dark mode theme</p>
+                  </div>
+                  <Switch
+                    checked={resolvedTheme === 'dark'}
+                    onChange={(checked) => setTheme(checked ? 'dark' : 'light')}
+                  />
                 </div>
               </AccordionItem>
               <AccordionItem title="Notifications">
                 <div className="flex items-center justify-between py-2">
-                  <div><p className="font-medium">Email Notifications</p><p className="text-sm text-gray-500">Receive order updates via email</p></div>
+                  <div>
+                    <p className="font-medium">Email Notifications</p>
+                    <p className="text-sm text-gray-500">Receive order updates via email</p>
+                  </div>
                   <Switch checked={true} onChange={() => {}} />
                 </div>
               </AccordionItem>

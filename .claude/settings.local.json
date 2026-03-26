@@ -1,7 +1,16 @@
 {
   "permissions": {
     "allow": [
-      "Bash(npx turbo:*)"
+      "Bash(npx turbo:*)",
+      "Bash(npm ls:*)",
+      "Bash(for pkg:*)",
+      "Bash(do echo:*)",
+      "Read(//Users/hvardhan/work/microfrontend-platform/packages/$pkg/**)",
+      "Bash(done)",
+      "Bash(npx eslint:*)",
+      "Bash(npm install:*)",
+      "Bash(npx next:*)",
+      "Bash(npx lint-staged:*)"
     ]
   }
 }

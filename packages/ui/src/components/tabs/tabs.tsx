@@ -1,12 +1,17 @@
 'use client';
 
-import {
-  createContext, useContext, useState, useId,
-  Children, cloneElement, isValidElement,
-  type ReactNode, type ReactElement,
-} from 'react';
-
 import { cn } from '@platform/utils';
+import {
+  createContext,
+  useContext,
+  useState,
+  useId,
+  Children,
+  cloneElement,
+  isValidElement,
+  type ReactNode,
+  type ReactElement,
+} from 'react';
 
 interface TabsContext {
   activeIndex: number;
@@ -14,7 +19,11 @@ interface TabsContext {
   baseId: string;
 }
 
-const TabsCtx = createContext<TabsContext>({ activeIndex: 0, setActiveIndex: () => {}, baseId: '' });
+const TabsCtx = createContext<TabsContext>({
+  activeIndex: 0,
+  setActiveIndex: () => {},
+  baseId: '',
+});
 
 export interface TabsProps {
   children: ReactNode;
@@ -26,7 +35,10 @@ export interface TabsProps {
 export function Tabs({ children, defaultIndex = 0, onChange, className }: TabsProps) {
   const [activeIndex, setActive] = useState(defaultIndex);
   const baseId = useId();
-  const setActiveIndex = (i: number) => { setActive(i); onChange?.(i); };
+  const setActiveIndex = (i: number) => {
+    setActive(i);
+    onChange?.(i);
+  };
 
   // Inject _index into TabPanel children
   let panelIndex = 0;
@@ -45,7 +57,7 @@ export function Tabs({ children, defaultIndex = 0, onChange, className }: TabsPr
 }
 
 export function TabList({ children, className }: { children: ReactNode; className?: string }) {
-  const ctx = useContext(TabsCtx);
+  useContext(TabsCtx);
   let tabIdx = 0;
 
   const tabs = Children.map(children, (child) => {
@@ -54,13 +66,24 @@ export function TabList({ children, className }: { children: ReactNode; classNam
   });
 
   return (
-    <div role="tablist" className={cn('flex gap-1 border-b border-gray-200 dark:border-gray-700', className)}>
+    <div
+      role="tablist"
+      className={cn('flex gap-1 border-b border-gray-200 dark:border-gray-700', className)}
+    >
       {tabs}
     </div>
   );
 }
 
-export function Tab({ children, className, _index = 0 }: { children: ReactNode; className?: string; _index?: number }) {
+export function Tab({
+  children,
+  className,
+  _index = 0,
+}: {
+  children: ReactNode;
+  className?: string;
+  _index?: number;
+}) {
   const { activeIndex, setActiveIndex, baseId } = useContext(TabsCtx);
   const isActive = activeIndex === _index;
 
@@ -89,7 +112,15 @@ export function Tab({ children, className, _index = 0 }: { children: ReactNode; 
   );
 }
 
-export function TabPanel({ children, className, _index = 0 }: { children: ReactNode; className?: string; _index?: number }) {
+export function TabPanel({
+  children,
+  className,
+  _index = 0,
+}: {
+  children: ReactNode;
+  className?: string;
+  _index?: number;
+}) {
   const { activeIndex, baseId } = useContext(TabsCtx);
   if (activeIndex !== _index) return null;
 

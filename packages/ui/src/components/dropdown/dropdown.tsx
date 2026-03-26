@@ -1,8 +1,7 @@
 'use client';
 
-import { useState, useRef, useEffect, type ReactNode } from 'react';
-
 import { cn } from '@platform/utils';
+import { useState, useRef, useEffect, type ReactNode } from 'react';
 
 export interface DropdownItem {
   label: string;
@@ -49,7 +48,10 @@ export function Dropdown({ trigger, items, className, align = 'left' }: Dropdown
               key={item.label}
               role="menuitem"
               disabled={item.disabled}
-              onClick={() => { item.onClick(); setOpen(false); }}
+              onClick={() => {
+                item.onClick();
+                setOpen(false);
+              }}
               className="w-full px-4 py-2 text-left text-sm hover:bg-gray-100 disabled:opacity-50 dark:hover:bg-gray-800"
             >
               {item.label}

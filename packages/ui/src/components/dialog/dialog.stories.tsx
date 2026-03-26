@@ -1,11 +1,15 @@
-import { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
+import { useState } from 'react';
 
 import { Button } from '../button';
 
 import { Dialog } from './dialog';
 
-const meta: Meta<typeof Dialog> = { title: 'Components/Dialog', component: Dialog, tags: ['autodocs'] };
+const meta: Meta<typeof Dialog> = {
+  title: 'Components/Dialog',
+  component: Dialog,
+  tags: ['autodocs'],
+};
 export default meta;
 type Story = StoryObj<typeof Dialog>;
 
@@ -18,7 +22,10 @@ export const Default: Story = {
         <Dialog
           isOpen={open}
           onClose={() => setOpen(false)}
-          onConfirm={() => { console.log('confirmed'); setOpen(false); }}
+          onConfirm={() => {
+            console.log('confirmed');
+            setOpen(false);
+          }}
           title="Delete Item?"
           description="This action cannot be undone."
           variant="destructive"

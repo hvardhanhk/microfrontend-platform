@@ -1,8 +1,7 @@
 'use client';
 
-import { useEffect, useCallback, useRef } from 'react';
-
 import type { EventName, EventPayload } from '@platform/types';
+import { useEffect, useCallback, useRef } from 'react';
 
 import { EventBus } from './event-bus';
 

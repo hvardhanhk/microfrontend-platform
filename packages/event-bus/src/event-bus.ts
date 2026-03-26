@@ -1,4 +1,4 @@
-import type { EventMap, EventName, EventPayload } from '@platform/types';
+import type { EventName, EventPayload } from '@platform/types';
 
 type Listener<E extends EventName> = (payload: EventPayload<E>) => void;
 

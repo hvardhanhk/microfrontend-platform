@@ -1,8 +1,8 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 
-import { Providers } from '@/components/providers';
 import { AppShell } from '@/components/app-shell';
+import { Providers } from '@/components/providers';
 
 import './globals.css';
 

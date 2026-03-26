@@ -1,6 +1,5 @@
-import type { HTMLAttributes } from 'react';
-
 import { cn } from '@platform/utils';
+import type { HTMLAttributes } from 'react';
 
 type BadgeVariant = 'default' | 'success' | 'warning' | 'error' | 'info';
 

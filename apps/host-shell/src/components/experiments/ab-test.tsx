@@ -1,9 +1,8 @@
 'use client';
 
-import { useMemo, type ReactNode } from 'react';
-
-import { useFeatureFlagStore } from '@platform/shared-state';
 import { EventBus } from '@platform/event-bus';
+import { useFeatureFlagStore } from '@platform/shared-state';
+import { useMemo, type ReactNode } from 'react';
 
 interface ABTestProps {
   /** Experiment/flag name */

@@ -1,8 +1,7 @@
 'use client';
 
-import { createContext, useContext, useState, useCallback, useId, type ReactNode } from 'react';
-
 import { cn } from '@platform/utils';
+import { createContext, useContext, useState, useCallback, type ReactNode } from 'react';
 
 export interface ToastProps {
   type: 'success' | 'error' | 'warning' | 'info';
@@ -49,7 +48,11 @@ export function ToastProvider({ children }: { children: ReactNode }) {
         className="fixed right-4 top-4 z-[100] flex flex-col gap-2"
       >
         {toasts.map((t) => (
-          <Toast key={t.id} {...t} onDismiss={() => setToasts((prev) => prev.filter((x) => x.id !== t.id))} />
+          <Toast
+            key={t.id}
+            {...t}
+            onDismiss={() => setToasts((prev) => prev.filter((x) => x.id !== t.id))}
+          />
         ))}
       </div>
     </ToastCtx.Provider>
@@ -60,9 +63,7 @@ export function useToast() {
   return useContext(ToastCtx);
 }
 
-export function Toast({
-  type, message, onDismiss,
-}: ToastProps & { onDismiss?: () => void }) {
+export function Toast({ type, message, onDismiss }: ToastProps & { onDismiss?: () => void }) {
   return (
     <div
       role="alert"
@@ -76,7 +77,12 @@ export function Toast({
       {onDismiss && (
         <button onClick={onDismiss} className="opacity-70 hover:opacity-100" aria-label="Dismiss">
           <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M6 18L18 6M6 6l12 12"
+            />
           </svg>
         </button>
       )}

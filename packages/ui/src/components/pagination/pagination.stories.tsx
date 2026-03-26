@@ -1,9 +1,13 @@
-import { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
+import { useState } from 'react';
 
 import { Pagination } from './pagination';
 
-const meta: Meta<typeof Pagination> = { title: 'Components/Pagination', component: Pagination, tags: ['autodocs'] };
+const meta: Meta<typeof Pagination> = {
+  title: 'Components/Pagination',
+  component: Pagination,
+  tags: ['autodocs'],
+};
 export default meta;
 type Story = StoryObj<typeof Pagination>;
 

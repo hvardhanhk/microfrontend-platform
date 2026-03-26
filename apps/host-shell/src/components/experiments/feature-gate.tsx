@@ -1,8 +1,7 @@
 'use client';
 
-import type { ReactNode } from 'react';
-
 import { useFeatureFlagStore } from '@platform/shared-state';
+import type { ReactNode } from 'react';
 
 interface FeatureGateProps {
   /** Feature flag name to check */

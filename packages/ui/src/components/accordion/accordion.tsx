@@ -1,8 +1,7 @@
 'use client';
 
-import { useState, type ReactNode } from 'react';
-
 import { cn } from '@platform/utils';
+import { useState, type ReactNode } from 'react';
 
 export interface AccordionProps {
   children: ReactNode;
@@ -10,7 +9,9 @@ export interface AccordionProps {
 }
 
 export function Accordion({ children, className }: AccordionProps) {
-  return <div className={cn('divide-y divide-gray-200 dark:divide-gray-700', className)}>{children}</div>;
+  return (
+    <div className={cn('divide-y divide-gray-200 dark:divide-gray-700', className)}>{children}</div>
+  );
 }
 
 export function AccordionItem({

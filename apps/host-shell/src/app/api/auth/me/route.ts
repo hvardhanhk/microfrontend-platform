@@ -1,6 +1,6 @@
-import { NextResponse } from 'next/server';
 import * as jose from 'jose';
 import { cookies } from 'next/headers';
+import { NextResponse } from 'next/server';
 
 const JWT_SECRET = new TextEncoder().encode(
   process.env.JWT_SECRET || 'platform-dev-secret-change-in-production',

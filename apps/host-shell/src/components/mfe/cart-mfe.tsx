@@ -1,10 +1,9 @@
 'use client';
 
-import Link from 'next/link';
-
-import { Card, CardBody, CardHeader, CardFooter, Button, Badge } from '@platform/ui';
 import { useCartStore } from '@platform/shared-state';
+import { Card, CardBody, CardHeader, CardFooter, Button, Badge } from '@platform/ui';
 import { formatCurrency } from '@platform/utils';
+import Link from 'next/link';
 
 /**
  * Cart MFE — reads from the shared Zustand cart store.
@@ -29,11 +28,25 @@ export default function CartMfe() {
         <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Shopping Cart</h1>
         <Card>
           <CardBody className="flex flex-col items-center py-16">
-            <svg className="h-16 w-16 text-gray-300 dark:text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z" />
+            <svg
+              className="h-16 w-16 text-gray-300 dark:text-gray-600"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={1.5}
+                d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z"
+              />
             </svg>
-            <p className="mt-4 text-lg font-medium text-gray-900 dark:text-white">Your cart is empty</p>
-            <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">Add some products to get started</p>
+            <p className="mt-4 text-lg font-medium text-gray-900 dark:text-white">
+              Your cart is empty
+            </p>
+            <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+              Add some products to get started
+            </p>
             <Link href="/products" className="mt-6">
               <Button>Browse Products</Button>
             </Link>
@@ -47,9 +60,14 @@ export default function CartMfe() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-          Shopping Cart <Badge variant="info" className="ml-2">{itemCount} {itemCount === 1 ? 'item' : 'items'}</Badge>
+          Shopping Cart{' '}
+          <Badge variant="info" className="ml-2">
+            {itemCount} {itemCount === 1 ? 'item' : 'items'}
+          </Badge>
         </h1>
-        <Button variant="ghost" onClick={clearCart}>Clear Cart</Button>
+        <Button variant="ghost" onClick={clearCart}>
+          Clear Cart
+        </Button>
       </div>
 
       <div className="grid gap-6 lg:grid-cols-3">
@@ -85,7 +103,9 @@ export default function CartMfe() {
                 </Button>
               </div>
               <div className="text-right">
-                <p className="font-semibold">{formatCurrency(item.product.price * item.quantity)}</p>
+                <p className="font-semibold">
+                  {formatCurrency(item.product.price * item.quantity)}
+                </p>
                 <button
                   className="text-sm text-red-500 hover:underline"
                   onClick={() => removeItem(item.id)}
@@ -98,15 +118,33 @@ export default function CartMfe() {
         </div>
 
         <Card className="h-fit">
-          <CardHeader><h2 className="text-lg font-semibold">Order Summary</h2></CardHeader>
+          <CardHeader>
+            <h2 className="text-lg font-semibold">Order Summary</h2>
+          </CardHeader>
           <CardBody className="space-y-3">
-            <div className="flex justify-between text-gray-600 dark:text-gray-400"><span>Subtotal</span><span>{formatCurrency(subtotal)}</span></div>
-            <div className="flex justify-between text-gray-600 dark:text-gray-400"><span>Shipping</span><span>{shipping === 0 ? 'Free' : formatCurrency(shipping)}</span></div>
-            <div className="flex justify-between text-gray-600 dark:text-gray-400"><span>Tax</span><span>{formatCurrency(tax)}</span></div>
+            <div className="flex justify-between text-gray-600 dark:text-gray-400">
+              <span>Subtotal</span>
+              <span>{formatCurrency(subtotal)}</span>
+            </div>
+            <div className="flex justify-between text-gray-600 dark:text-gray-400">
+              <span>Shipping</span>
+              <span>{shipping === 0 ? 'Free' : formatCurrency(shipping)}</span>
+            </div>
+            <div className="flex justify-between text-gray-600 dark:text-gray-400">
+              <span>Tax</span>
+              <span>{formatCurrency(tax)}</span>
+            </div>
             <hr className="border-gray-200 dark:border-gray-700" />
-            <div className="flex justify-between text-lg font-bold"><span>Total</span><span>{formatCurrency(total)}</span></div>
+            <div className="flex justify-between text-lg font-bold">
+              <span>Total</span>
+              <span>{formatCurrency(total)}</span>
+            </div>
           </CardBody>
-          <CardFooter><Button className="w-full" size="lg">Proceed to Checkout</Button></CardFooter>
+          <CardFooter>
+            <Button className="w-full" size="lg">
+              Proceed to Checkout
+            </Button>
+          </CardFooter>
         </Card>
       </div>
     </div>

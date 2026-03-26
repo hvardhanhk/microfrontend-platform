@@ -1,8 +1,7 @@
 'use client';
 
-import { useState } from 'react';
-
 import { Card, CardBody, CardHeader, Button, Input } from '@platform/ui';
+import { useState } from 'react';
 
 export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
@@ -48,8 +47,16 @@ export default function LoginPage() {
           <form onSubmit={handleSubmit} className="space-y-4">
             {error && <p className="text-sm text-red-600">{error}</p>}
             <Input label="Email" name="email" type="email" placeholder="you@example.com" required />
-            <Input label="Password" name="password" type="password" placeholder="********" required />
-            <Button className="w-full" type="submit" isLoading={isLoading}>Sign In</Button>
+            <Input
+              label="Password"
+              name="password"
+              type="password"
+              placeholder="********"
+              required
+            />
+            <Button className="w-full" type="submit" isLoading={isLoading}>
+              Sign In
+            </Button>
           </form>
         </CardBody>
       </Card>

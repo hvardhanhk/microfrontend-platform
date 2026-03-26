@@ -1,8 +1,7 @@
 'use client';
 
-import { useState, type ReactNode } from 'react';
-
 import { cn } from '@platform/utils';
+import { useState, type ReactNode } from 'react';
 
 export interface TooltipProps {
   content: string;

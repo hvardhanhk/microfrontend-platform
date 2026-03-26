@@ -1,6 +1,5 @@
-import type { ReactNode } from 'react';
-
 import { cn } from '@platform/utils';
+import type { ReactNode } from 'react';
 
 export interface NavbarProps {
   logo?: ReactNode;
@@ -26,7 +25,12 @@ export function Navbar({ logo, actions, onMenuClick, className }: NavbarProps) {
           aria-label="Open menu"
         >
           <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M4 6h16M4 12h16M4 18h16"
+            />
           </svg>
         </button>
       )}

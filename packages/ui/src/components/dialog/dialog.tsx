@@ -1,7 +1,7 @@
 'use client';
 
-import { Modal } from '../modal';
 import { Button } from '../button';
+import { Modal } from '../modal';
 
 export interface DialogProps {
   isOpen: boolean;
@@ -16,15 +16,25 @@ export interface DialogProps {
 }
 
 export function Dialog({
-  isOpen, onClose, onConfirm, title, description,
-  confirmLabel = 'Confirm', cancelLabel = 'Cancel',
-  variant = 'default', isLoading,
+  isOpen,
+  onClose,
+  onConfirm,
+  title,
+  description,
+  confirmLabel = 'Confirm',
+  cancelLabel = 'Cancel',
+  variant = 'default',
+  isLoading,
 }: DialogProps) {
   return (
     <Modal isOpen={isOpen} onClose={onClose} title={title} size="sm">
-      {description && <p className="mb-6 text-sm text-gray-600 dark:text-gray-400">{description}</p>}
+      {description && (
+        <p className="mb-6 text-sm text-gray-600 dark:text-gray-400">{description}</p>
+      )}
       <div className="flex justify-end gap-3">
-        <Button variant="outline" onClick={onClose} disabled={isLoading}>{cancelLabel}</Button>
+        <Button variant="outline" onClick={onClose} disabled={isLoading}>
+          {cancelLabel}
+        </Button>
         <Button
           variant={variant === 'destructive' ? 'destructive' : 'primary'}
           onClick={onConfirm}

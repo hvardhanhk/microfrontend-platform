@@ -1,8 +1,7 @@
 'use client';
 
-import { useState } from 'react';
-
 import { cn } from '@platform/utils';
+import { useState } from 'react';
 
 export interface AvatarProps {
   src?: string;
@@ -14,7 +13,12 @@ export interface AvatarProps {
 const sizeStyles = { sm: 'h-8 w-8 text-xs', md: 'h-10 w-10 text-sm', lg: 'h-16 w-16 text-lg' };
 
 function getInitials(name: string): string {
-  return name.split(' ').map((w) => w[0]).join('').toUpperCase().slice(0, 2);
+  return name
+    .split(' ')
+    .map((w) => w[0])
+    .join('')
+    .toUpperCase()
+    .slice(0, 2);
 }
 
 export function Avatar({ src, name, size = 'md', className }: AvatarProps) {
@@ -31,7 +35,12 @@ export function Avatar({ src, name, size = 'md', className }: AvatarProps) {
       aria-label={name}
     >
       {src && !imgError ? (
-        <img src={src} alt={name} className="h-full w-full object-cover" onError={() => setImgError(true)} />
+        <img
+          src={src}
+          alt={name}
+          className="h-full w-full object-cover"
+          onError={() => setImgError(true)}
+        />
       ) : (
         <span>{getInitials(name)}</span>
       )}
