@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: host-shell
+  labels:
+    app: host-shell
+    tier: frontend
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: host-shell
+  template:
+    metadata:
+      labels:
+        app: host-shell
+    spec:
+      containers:
+        - name: host-shell
+          image: ${ECR_REGISTRY}/platform/host-shell:latest
+          ports:
+            - containerPort: 3000
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 3000
+            initialDelaySeconds: 10
+            periodSeconds: 30
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 3000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          env:
+            - name: NODE_ENV
+              value: production

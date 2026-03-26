@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  host-shell:
+    build:
+      context: ../..
+      dockerfile: infra/docker/Dockerfile.app
+      args:
+        APP_NAME: host-shell
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+
+  mfe-products:
+    build:
+      context: ../..
+      dockerfile: infra/docker/Dockerfile.app
+      args:
+        APP_NAME: mfe-products
+    ports:
+      - "3001:3000"
+
+  mfe-cart:
+    build:
+      context: ../..
+      dockerfile: infra/docker/Dockerfile.app
+      args:
+        APP_NAME: mfe-cart
+    ports:
+      - "3002:3000"
+
+  mfe-user:
+    build:
+      context: ../..
+      dockerfile: infra/docker/Dockerfile.app
+      args:
+        APP_NAME: mfe-user
+    ports:
+      - "3003:3000"

@@ -1,0 +1,6 @@
+{
+  "name": "@platform/config",
+  "version": "1.0.0",
+  "private": true,
+  "files": ["eslint", "tailwind", "typescript"]
+}

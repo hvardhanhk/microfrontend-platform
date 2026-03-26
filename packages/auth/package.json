@@ -1,0 +1,17 @@
+{
+  "name": "@platform/auth",
+  "version": "1.0.0",
+  "private": true,
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "scripts": {
+    "lint": "eslint src/",
+    "test": "jest --passWithNoTests",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@platform/types": "*",
+    "@platform/shared-state": "*",
+    "jose": "^6.0.8"
+  }
+}
