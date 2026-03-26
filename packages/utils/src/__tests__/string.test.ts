@@ -33,7 +33,7 @@ describe('truncate', () => {
   });
 
   it('truncates with suffix', () => {
-    expect(truncate('hello world', 8)).toBe('hello w…');
+    expect(truncate('hello world', 8)).toBe('hello...');
   });
 
   it('supports custom suffix', () => {

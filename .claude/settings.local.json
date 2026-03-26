@@ -11,7 +11,13 @@
       "Bash(npm install:*)",
       "Bash(npx next:*)",
       "Bash(npx lint-staged:*)",
-      "Bash(grep -v \"deprecated\\\\|create-next-app\\\\|codemod\\\\|^$\")"
+      "Bash(grep -v \"deprecated\\\\|create-next-app\\\\|codemod\\\\|^$\")",
+      "Bash(npx jest:*)",
+      "Bash(node -e \"const j = require\\(''jest-config''\\); console.log\\(Object.keys\\(j.defaults\\).filter\\(k => k.toLowerCase\\(\\).includes\\(''setup''\\)\\)\\)\")",
+      "Bash(ls /Users/hvardhan/work/microfrontend-platform/packages/ui/jest.config*)",
+      "Bash(for dir:*)",
+      "Bash(do ls:*)",
+      "Bash(echo \"MISSING: $dir\")"
     ]
   }
 }

@@ -19,14 +19,14 @@ module.exports = {
     // Map workspace packages to source
     '^@platform/(.*)$': '<rootDir>/../../packages/$1/src',
   },
-  setupFilesAfterSetup: [],
+  setupFilesAfterEnv: ['@testing-library/jest-dom'],
   collectCoverageFrom: [
     'src/**/*.{ts,tsx}',
     '!src/**/*.stories.{ts,tsx}',
     '!src/**/*.d.ts',
     '!src/**/index.ts',
   ],
-  coverageThresholds: {
+  coverageThreshold: {
     global: { branches: 70, functions: 70, lines: 70, statements: 70 },
   },
 };

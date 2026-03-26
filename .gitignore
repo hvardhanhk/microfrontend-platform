@@ -51,3 +51,5 @@ infra/docker/.env
 *.log
 *.swp
 *.swo
+
+.claude
