@@ -29,14 +29,26 @@ class Logger {
     if (process.env.NODE_ENV === 'production') {
       console[method](JSON.stringify(entry));
     } else {
-      console[method](`[${entry.timestamp}] [${level.toUpperCase()}] [${this.service}]`, message, context ?? '');
+      console[method](
+        `[${entry.timestamp}] [${level.toUpperCase()}] [${this.service}]`,
+        message,
+        context ?? '',
+      );
     }
   }
 
-  debug(msg: string, ctx?: Record<string, unknown>) { this.log('debug', msg, ctx); }
-  info(msg: string, ctx?: Record<string, unknown>) { this.log('info', msg, ctx); }
-  warn(msg: string, ctx?: Record<string, unknown>) { this.log('warn', msg, ctx); }
-  error(msg: string, ctx?: Record<string, unknown>) { this.log('error', msg, ctx); }
+  debug(msg: string, ctx?: Record<string, unknown>) {
+    this.log('debug', msg, ctx);
+  }
+  info(msg: string, ctx?: Record<string, unknown>) {
+    this.log('info', msg, ctx);
+  }
+  warn(msg: string, ctx?: Record<string, unknown>) {
+    this.log('warn', msg, ctx);
+  }
+  error(msg: string, ctx?: Record<string, unknown>) {
+    this.log('error', msg, ctx);
+  }
 
   child(service: string): Logger {
     return new Logger(`${this.service}:${service}`);

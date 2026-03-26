@@ -38,11 +38,11 @@ export function InitFeatureFlags() {
   useEffect(() => {
     // In production: fetch from LaunchDarkly, Unleash, or custom API
     const flags = [
-      { name: "new-checkout-flow", enabled: true },
-      { name: "dark-mode-v2", enabled: false },
-      { name: "hero-experiment", enabled: true, variant: "B" },
-      { name: "checkout-cta", enabled: true, variant: "A" },
-      { name: "show-recommendations", enabled: true },
+      { name: 'new-checkout-flow', enabled: true },
+      { name: 'dark-mode-v2', enabled: false },
+      { name: 'hero-experiment', enabled: true, variant: 'B' },
+      { name: 'checkout-cta', enabled: true, variant: 'A' },
+      { name: 'show-recommendations', enabled: true },
     ];
     setFlags(flags);
   }, [setFlags]);
@@ -79,20 +79,26 @@ export function FeatureGate({ flag, children, fallback = null, variant }) {
 ### Usage
 
 ```tsx
-{/* Simple on/off gate */}
+{
+  /* Simple on/off gate */
+}
 <FeatureGate flag="new-checkout-flow">
   <NewCheckoutComponent />
-</FeatureGate>
+</FeatureGate>;
 
-{/* Variant-specific gate */}
+{
+  /* Variant-specific gate */
+}
 <FeatureGate flag="hero-experiment" variant="B">
   <HeroVariantB />
-</FeatureGate>
+</FeatureGate>;
 
-{/* With fallback */}
+{
+  /* With fallback */
+}
 <FeatureGate flag="show-recommendations" fallback={<ClassicLayout />}>
   <RecommendationsPanel />
-</FeatureGate>
+</FeatureGate>;
 ```
 
 ## ABTest Component
@@ -147,28 +153,28 @@ export function ABTest({ experiment, variants, fallback }) {
 
 **File:** `packages/shared-state/src/feature-flag-store.ts`
 
-| Method              | Purpose                                  |
-| ------------------- | ---------------------------------------- |
-| `setFlags(flags[])` | Bulk load flags from config              |
-| `setFlag(flag)`     | Update a single flag                     |
-| `isEnabled(name)`   | Check if flag is on                      |
-| `getVariant(name)`  | Get A/B test variant string              |
+| Method              | Purpose                     |
+| ------------------- | --------------------------- |
+| `setFlags(flags[])` | Bulk load flags from config |
+| `setFlag(flag)`     | Update a single flag        |
+| `isEnabled(name)`   | Check if flag is on         |
+| `getVariant(name)`  | Get A/B test variant string |
 
 **Not persisted** — flags are loaded fresh on each app initialization to ensure consistency with the remote config service.
 
 ## Communication with Other Technologies
 
-| Technology     | How Feature Flags Interact                                    |
-| -------------- | ------------------------------------------------------------- |
-| Zustand        | `useFeatureFlagStore` holds all flags                         |
-| Event Bus      | `feature:flag-updated` event on flag changes; ABTest publishes impressions |
-| React          | `FeatureGate` and `ABTest` are declarative React components   |
-| TypeScript     | `FeatureFlag` type from `@platform/types`                     |
+| Technology | How Feature Flags Interact                                                 |
+| ---------- | -------------------------------------------------------------------------- |
+| Zustand    | `useFeatureFlagStore` holds all flags                                      |
+| Event Bus  | `feature:flag-updated` event on flag changes; ABTest publishes impressions |
+| React      | `FeatureGate` and `ABTest` are declarative React components                |
+| TypeScript | `FeatureFlag` type from `@platform/types`                                  |
 
 ## Key Files
 
-| File                                                    | Purpose                  |
-| ------------------------------------------------------- | ------------------------ |
+| File                                                          | Purpose             |
+| ------------------------------------------------------------- | ------------------- |
 | `apps/host-shell/src/components/experiments/init-flags.tsx`   | Flag initialization |
 | `apps/host-shell/src/components/experiments/feature-gate.tsx` | Declarative gate    |
 | `apps/host-shell/src/components/experiments/ab-test.tsx`      | A/B test component  |

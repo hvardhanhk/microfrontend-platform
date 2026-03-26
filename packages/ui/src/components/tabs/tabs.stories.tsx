@@ -14,9 +14,15 @@ export const Default: Story = {
         <Tab>Tab 2</Tab>
         <Tab>Tab 3</Tab>
       </TabList>
-      <TabPanel><div className="p-4">Content for Tab 1</div></TabPanel>
-      <TabPanel><div className="p-4">Content for Tab 2</div></TabPanel>
-      <TabPanel><div className="p-4">Content for Tab 3</div></TabPanel>
+      <TabPanel>
+        <div className="p-4">Content for Tab 1</div>
+      </TabPanel>
+      <TabPanel>
+        <div className="p-4">Content for Tab 2</div>
+      </TabPanel>
+      <TabPanel>
+        <div className="p-4">Content for Tab 3</div>
+      </TabPanel>
     </Tabs>
   ),
 };

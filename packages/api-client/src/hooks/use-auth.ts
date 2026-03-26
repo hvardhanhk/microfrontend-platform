@@ -16,10 +16,7 @@ export function useLogin() {
 
   return useMutation({
     mutationFn: (credentials: LoginCredentials) =>
-      apiClient.post<ApiResponse<{ user: User; tokens: AuthTokens }>>(
-        '/auth/login',
-        credentials,
-      ),
+      apiClient.post<ApiResponse<{ user: User; tokens: AuthTokens }>>('/auth/login', credentials),
     onSuccess: (response) => {
       login(response.data.user, response.data.tokens);
     },
@@ -44,10 +41,7 @@ export function useRegister() {
 
   return useMutation({
     mutationFn: (data: RegisterData) =>
-      apiClient.post<ApiResponse<{ user: User; tokens: AuthTokens }>>(
-        '/auth/register',
-        data,
-      ),
+      apiClient.post<ApiResponse<{ user: User; tokens: AuthTokens }>>('/auth/register', data),
     onSuccess: (response) => {
       login(response.data.user, response.data.tokens);
     },

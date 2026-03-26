@@ -29,7 +29,9 @@ export function ThemeProvider({
   useEffect(() => {
     const resolve = () => {
       if (theme === 'system') {
-        setResolvedTheme(window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        setResolvedTheme(
+          window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light',
+        );
       } else {
         setResolvedTheme(theme);
       }

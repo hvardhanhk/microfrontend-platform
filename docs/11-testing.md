@@ -12,21 +12,21 @@ The platform implements a **multi-layer testing strategy**: unit tests with **Je
 
 ```javascript
 module.exports = {
-  testEnvironment: "jsdom",
+  testEnvironment: 'jsdom',
   transform: {
-    "^.+\\.(t|j)sx?$": [
-      "@swc/jest",
+    '^.+\\.(t|j)sx?$': [
+      '@swc/jest',
       {
         jsc: {
-          parser: { syntax: "typescript", tsx: true },
-          transform: { react: { runtime: "automatic" } },
+          parser: { syntax: 'typescript', tsx: true },
+          transform: { react: { runtime: 'automatic' } },
         },
       },
     ],
   },
   moduleNameMapper: {
-    "\\.(css|less|scss)$": "identity-obj-proxy",
-    "^@platform/(.*)$": "<rootDir>/../../packages/$1/src",
+    '\\.(css|less|scss)$': 'identity-obj-proxy',
+    '^@platform/(.*)$': '<rootDir>/../../packages/$1/src',
   },
   coverageThresholds: {
     global: { branches: 70, functions: 70, lines: 70, statements: 70 },
@@ -72,29 +72,29 @@ describe("Button", () => {
 
 ```typescript
 export default defineConfig({
-  testDir: "./e2e",
+  testDir: './e2e',
   fullyParallel: true,
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 1 : undefined,
-  reporter: process.env.CI ? "github" : "html",
+  reporter: process.env.CI ? 'github' : 'html',
   timeout: 30_000,
 
   use: {
-    baseURL: "http://localhost:3000",
-    trace: "on-first-retry",
-    screenshot: "only-on-failure",
+    baseURL: 'http://localhost:3000',
+    trace: 'on-first-retry',
+    screenshot: 'only-on-failure',
   },
 
   projects: [
-    { name: "chromium", use: { ...devices["Desktop Chrome"] } },
-    { name: "firefox", use: { ...devices["Desktop Firefox"] } },
-    { name: "mobile-chrome", use: { ...devices["Pixel 5"] } },
+    { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
+    { name: 'firefox', use: { ...devices['Desktop Firefox'] } },
+    { name: 'mobile-chrome', use: { ...devices['Pixel 5'] } },
   ],
 
   webServer: process.env.CI
     ? {
-        command: "npm run dev --filter=@platform/host-shell",
-        url: "http://localhost:3000",
+        command: 'npm run dev --filter=@platform/host-shell',
+        url: 'http://localhost:3000',
         reuseExistingServer: false,
         timeout: 120_000,
       }
@@ -104,31 +104,31 @@ export default defineConfig({
 
 ### Browser Matrix
 
-| Project        | Device           | Purpose                       |
-| -------------- | ---------------- | ----------------------------- |
-| chromium       | Desktop Chrome   | Primary desktop browser       |
-| firefox        | Desktop Firefox  | Cross-browser compatibility   |
-| mobile-chrome  | Pixel 5          | Mobile responsive testing     |
+| Project       | Device          | Purpose                     |
+| ------------- | --------------- | --------------------------- |
+| chromium      | Desktop Chrome  | Primary desktop browser     |
+| firefox       | Desktop Firefox | Cross-browser compatibility |
+| mobile-chrome | Pixel 5         | Mobile responsive testing   |
 
 ### E2E Test Suites
 
 **Directory:** `e2e/`
 
-| File              | Tests                                               |
-| ----------------- | --------------------------------------------------- |
-| `auth.spec.ts`    | Login form renders, demo login redirects to dashboard |
-| `products.spec.ts`| Product grid renders, filtering, sorting works       |
-| `cart.spec.ts`    | Cart UI renders, items display correctly             |
-| `home.spec.ts`    | Homepage renders with hero and feature cards         |
+| File               | Tests                                                 |
+| ------------------ | ----------------------------------------------------- |
+| `auth.spec.ts`     | Login form renders, demo login redirects to dashboard |
+| `products.spec.ts` | Product grid renders, filtering, sorting works        |
+| `cart.spec.ts`     | Cart UI renders, items display correctly              |
+| `home.spec.ts`     | Homepage renders with hero and feature cards          |
 
 ### Artifacts
 
-| Setting                  | Value              | Purpose                             |
-| ------------------------ | ------------------ | ----------------------------------- |
-| `trace: 'on-first-retry'` | First retry only | Debug flaky tests with full trace   |
-| `screenshot: 'only-on-failure'` | On failure  | Visual evidence of test failures    |
-| `reporter: 'github'`    | CI only            | Inline annotations in PR            |
-| `reporter: 'html'`      | Local only         | Interactive HTML report              |
+| Setting                         | Value            | Purpose                           |
+| ------------------------------- | ---------------- | --------------------------------- |
+| `trace: 'on-first-retry'`       | First retry only | Debug flaky tests with full trace |
+| `screenshot: 'only-on-failure'` | On failure       | Visual evidence of test failures  |
+| `reporter: 'github'`            | CI only          | Inline annotations in PR          |
+| `reporter: 'html'`              | Local only       | Interactive HTML report           |
 
 ## Visual Regression (Chromatic)
 
@@ -183,22 +183,22 @@ PR Status Check: Pass/Fail
 
 ## Communication with Other Technologies
 
-| Technology     | How Testing Interacts                                          |
-| -------------- | -------------------------------------------------------------- |
-| Jest + SWC     | Unit tests with fast TypeScript compilation                    |
-| Playwright     | E2E tests against running Next.js dev server                   |
-| Storybook      | Component stories serve as visual test cases                   |
-| Chromatic      | Pixel-level diffs of Storybook stories on every PR             |
-| GitHub Actions | CI runs all three test layers in sequence                      |
-| Turborepo      | `turbo test` runs tests across all packages                    |
+| Technology     | How Testing Interacts                              |
+| -------------- | -------------------------------------------------- |
+| Jest + SWC     | Unit tests with fast TypeScript compilation        |
+| Playwright     | E2E tests against running Next.js dev server       |
+| Storybook      | Component stories serve as visual test cases       |
+| Chromatic      | Pixel-level diffs of Storybook stories on every PR |
+| GitHub Actions | CI runs all three test layers in sequence          |
+| Turborepo      | `turbo test` runs tests across all packages        |
 
 ## Key Files
 
-| File                                     | Purpose                          |
-| ---------------------------------------- | -------------------------------- |
-| `packages/config/jest/base.js`           | Shared Jest configuration        |
-| `playwright.config.ts`                   | Playwright configuration         |
-| `e2e/*.spec.ts`                          | E2E test suites                  |
-| `packages/ui/.storybook/main.ts`         | Storybook config                 |
-| `packages/ui/src/**/*.stories.tsx`       | Component stories                |
-| `packages/ui/src/**/__tests__/*.test.tsx` | Unit tests                      |
+| File                                      | Purpose                   |
+| ----------------------------------------- | ------------------------- |
+| `packages/config/jest/base.js`            | Shared Jest configuration |
+| `playwright.config.ts`                    | Playwright configuration  |
+| `e2e/*.spec.ts`                           | E2E test suites           |
+| `packages/ui/.storybook/main.ts`          | Storybook config          |
+| `packages/ui/src/**/*.stories.tsx`        | Component stories         |
+| `packages/ui/src/**/__tests__/*.test.tsx` | Unit tests                |

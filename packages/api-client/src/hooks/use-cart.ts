@@ -34,8 +34,7 @@ export function useRemoveFromCart() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (itemId: string) =>
-      apiClient.delete<ApiResponse<Cart>>(`/cart/items/${itemId}`),
+    mutationFn: (itemId: string) => apiClient.delete<ApiResponse<Cart>>(`/cart/items/${itemId}`),
     onSuccess: (response) => {
       queryClient.setQueryData(['cart'], response);
     },

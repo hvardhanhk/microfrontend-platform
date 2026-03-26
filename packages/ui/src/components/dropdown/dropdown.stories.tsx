@@ -4,7 +4,11 @@ import { Button } from '../button';
 
 import { Dropdown } from './dropdown';
 
-const meta: Meta<typeof Dropdown> = { title: 'Components/Dropdown', component: Dropdown, tags: ['autodocs'] };
+const meta: Meta<typeof Dropdown> = {
+  title: 'Components/Dropdown',
+  component: Dropdown,
+  tags: ['autodocs'],
+};
 export default meta;
 type Story = StoryObj<typeof Dropdown>;
 

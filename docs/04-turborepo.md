@@ -55,14 +55,14 @@ host-shell mfe-products mfe-cart  ... (apps build after packages)
 
 ### Key Settings Explained
 
-| Setting            | Value            | Purpose                                           |
-| ------------------ | ---------------- | ------------------------------------------------- |
-| `^build`           | Dependency prefix | Build all package dependencies before the current |
-| `outputs`          | `.next/**`, `dist/**` | Cache these build artifacts                  |
-| `!.next/cache/**`  | Exclude          | Don't cache Next.js internal cache                |
-| `globalDependencies` | `**/.env.*local` | Invalidate all caches when env files change     |
-| `cache: false`     | On `dev`/`clean` | Don't cache development server or clean tasks     |
-| `persistent: true` | On `dev`         | Keep the dev server running                       |
+| Setting              | Value                 | Purpose                                           |
+| -------------------- | --------------------- | ------------------------------------------------- |
+| `^build`             | Dependency prefix     | Build all package dependencies before the current |
+| `outputs`            | `.next/**`, `dist/**` | Cache these build artifacts                       |
+| `!.next/cache/**`    | Exclude               | Don't cache Next.js internal cache                |
+| `globalDependencies` | `**/.env.*local`      | Invalidate all caches when env files change       |
+| `cache: false`       | On `dev`/`clean`      | Don't cache development server or clean tasks     |
+| `persistent: true`   | On `dev`              | Keep the dev server running                       |
 
 ## Workspace Structure
 
@@ -83,25 +83,25 @@ host-shell mfe-products mfe-cart  ... (apps build after packages)
 
 ### Packages (Build Order: First)
 
-| Package             | Purpose                             | Consumed By            |
-| ------------------- | ----------------------------------- | ---------------------- |
-| `@platform/types`   | Shared TypeScript definitions       | All packages and apps  |
-| `@platform/utils`   | Utility functions (cn, format, log) | All packages and apps  |
-| `@platform/event-bus` | Cross-MFE pub/sub messaging       | All apps               |
-| `@platform/shared-state` | Zustand stores                 | All apps               |
-| `@platform/auth`    | JWT + AuthProvider                  | host-shell             |
-| `@platform/api-client` | HTTP client + React Query hooks  | All apps               |
-| `@platform/ui`      | 20 React components                | All apps               |
-| `@platform/config`  | ESLint, Tailwind, TS, Jest configs  | All packages and apps  |
+| Package                  | Purpose                             | Consumed By           |
+| ------------------------ | ----------------------------------- | --------------------- |
+| `@platform/types`        | Shared TypeScript definitions       | All packages and apps |
+| `@platform/utils`        | Utility functions (cn, format, log) | All packages and apps |
+| `@platform/event-bus`    | Cross-MFE pub/sub messaging         | All apps              |
+| `@platform/shared-state` | Zustand stores                      | All apps              |
+| `@platform/auth`         | JWT + AuthProvider                  | host-shell            |
+| `@platform/api-client`   | HTTP client + React Query hooks     | All apps              |
+| `@platform/ui`           | 20 React components                 | All apps              |
+| `@platform/config`       | ESLint, Tailwind, TS, Jest configs  | All packages and apps |
 
 ### Apps (Build Order: After Packages)
 
-| App              | Port | Purpose              |
-| ---------------- | ---- | -------------------- |
-| `host-shell`     | 3000 | Main container       |
-| `mfe-products`   | 3001 | Product catalog      |
-| `mfe-cart`       | 3002 | Shopping cart         |
-| `mfe-user`       | 3003 | User dashboard        |
+| App            | Port | Purpose         |
+| -------------- | ---- | --------------- |
+| `host-shell`   | 3000 | Main container  |
+| `mfe-products` | 3001 | Product catalog |
+| `mfe-cart`     | 3002 | Shopping cart   |
+| `mfe-user`     | 3003 | User dashboard  |
 
 ## Commands
 
@@ -127,17 +127,17 @@ npm run clean
 
 ## Communication with Other Technologies
 
-| Technology      | How Turborepo Interacts                                             |
-| --------------- | ------------------------------------------------------------------- |
-| Next.js         | `turbo build` triggers `next build` for each app in dependency order |
-| TypeScript      | Package builds produce `.d.ts` files consumed by dependent packages |
-| GitHub Actions  | CI runs `npm run build` which invokes `turbo build`                 |
-| Docker          | Dockerfile runs `npx turbo build --filter=@platform/${APP_NAME}`    |
-| npm workspaces  | Turborepo uses npm workspaces for package resolution                |
+| Technology     | How Turborepo Interacts                                              |
+| -------------- | -------------------------------------------------------------------- |
+| Next.js        | `turbo build` triggers `next build` for each app in dependency order |
+| TypeScript     | Package builds produce `.d.ts` files consumed by dependent packages  |
+| GitHub Actions | CI runs `npm run build` which invokes `turbo build`                  |
+| Docker         | Dockerfile runs `npx turbo build --filter=@platform/${APP_NAME}`     |
+| npm workspaces | Turborepo uses npm workspaces for package resolution                 |
 
 ## Key Files
 
-| File                | Purpose                            |
-| ------------------- | ---------------------------------- |
-| `turbo.json`        | Task graph configuration           |
-| `package.json`      | Workspace definition + scripts     |
+| File           | Purpose                        |
+| -------------- | ------------------------------ |
+| `turbo.json`   | Task graph configuration       |
+| `package.json` | Workspace definition + scripts |

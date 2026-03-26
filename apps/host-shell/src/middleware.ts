@@ -21,7 +21,13 @@ export function middleware(request: NextRequest) {
   // Vercel (or other edge providers) instead.
   const country = request.headers.get('x-vercel-ip-country') ?? 'US';
   response.headers.set('x-geo-country', country);
-  const currencyMap: Record<string, string> = { US: 'USD', GB: 'GBP', JP: 'JPY', IN: 'INR', DE: 'EUR' };
+  const currencyMap: Record<string, string> = {
+    US: 'USD',
+    GB: 'GBP',
+    JP: 'JPY',
+    IN: 'INR',
+    DE: 'EUR',
+  };
   response.headers.set('x-currency', currencyMap[country] || 'USD');
 
   // 2. Protected route check

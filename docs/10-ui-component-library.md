@@ -6,28 +6,28 @@ A shared design system of **20 React components** built with accessibility, them
 
 ## Components
 
-| Component    | Props Highlights                                  | Accessibility          |
-| ------------ | ------------------------------------------------- | ---------------------- |
-| **Button**   | variant, size, isLoading, disabled                | aria-busy, disabled    |
-| **Input**    | label, error, hint, name                          | aria-invalid, htmlFor  |
-| **Modal**    | isOpen, onClose, title                            | role="dialog", focus trap |
-| **Card**     | CardHeader, CardBody, CardFooter                  | Semantic sections      |
-| **Table**    | TableHead, TableBody, TableRow, TableCell         | Semantic table markup  |
-| **Tabs**     | defaultIndex, onChange                             | role="tablist/tab/tabpanel" |
-| **Dropdown** | trigger, items                                    | role="menu/menuitem"   |
-| **Toast**    | ToastProvider, useToast hook                      | role="alert"           |
-| **Tooltip**  | content, children                                 | aria-describedby       |
-| **Avatar**   | name, size, src                                   | aria-label             |
-| **Badge**    | variant (info/success/warning/error/default)      | -                      |
-| **Spinner**  | size (sm/md/lg)                                   | aria-busy              |
-| **Skeleton** | width, height, rounded                            | aria-hidden            |
-| **Pagination** | currentPage, totalPages, onPageChange           | aria-label, aria-current |
-| **Form**     | FormField, FormLabel, FormMessage                 | aria-describedby       |
-| **Navbar**   | logo, actions, onMenuClick                        | nav role               |
-| **Sidebar**  | isOpen, onClose, items                            | Overlay + focus management |
-| **Accordion** | AccordionItem with title                         | aria-expanded          |
-| **Switch**   | checked, onChange, label                          | role="switch", aria-checked |
-| **Dialog**   | open, onClose, title                              | role="dialog"          |
+| Component      | Props Highlights                             | Accessibility               |
+| -------------- | -------------------------------------------- | --------------------------- |
+| **Button**     | variant, size, isLoading, disabled           | aria-busy, disabled         |
+| **Input**      | label, error, hint, name                     | aria-invalid, htmlFor       |
+| **Modal**      | isOpen, onClose, title                       | role="dialog", focus trap   |
+| **Card**       | CardHeader, CardBody, CardFooter             | Semantic sections           |
+| **Table**      | TableHead, TableBody, TableRow, TableCell    | Semantic table markup       |
+| **Tabs**       | defaultIndex, onChange                       | role="tablist/tab/tabpanel" |
+| **Dropdown**   | trigger, items                               | role="menu/menuitem"        |
+| **Toast**      | ToastProvider, useToast hook                 | role="alert"                |
+| **Tooltip**    | content, children                            | aria-describedby            |
+| **Avatar**     | name, size, src                              | aria-label                  |
+| **Badge**      | variant (info/success/warning/error/default) | -                           |
+| **Spinner**    | size (sm/md/lg)                              | aria-busy                   |
+| **Skeleton**   | width, height, rounded                       | aria-hidden                 |
+| **Pagination** | currentPage, totalPages, onPageChange        | aria-label, aria-current    |
+| **Form**       | FormField, FormLabel, FormMessage            | aria-describedby            |
+| **Navbar**     | logo, actions, onMenuClick                   | nav role                    |
+| **Sidebar**    | isOpen, onClose, items                       | Overlay + focus management  |
+| **Accordion**  | AccordionItem with title                     | aria-expanded               |
+| **Switch**     | checked, onChange, label                     | role="switch", aria-checked |
+| **Dialog**     | open, onClose, title                         | role="dialog"               |
 
 ## Design Patterns
 
@@ -62,13 +62,12 @@ className={cn(
 
 ```typescript
 const variantStyles = {
-  primary:
-    "bg-brand-600 text-white hover:bg-brand-700 dark:bg-brand-500 dark:hover:bg-brand-600",
-  secondary: "bg-gray-100 text-gray-900 hover:bg-gray-200 dark:bg-gray-800",
-  outline: "border border-gray-300 hover:bg-gray-50 dark:border-gray-600",
-  ghost: "hover:bg-gray-100 dark:hover:bg-gray-800",
-  destructive: "bg-red-600 text-white hover:bg-red-700",
-  link: "text-brand-600 underline-offset-4 hover:underline",
+  primary: 'bg-brand-600 text-white hover:bg-brand-700 dark:bg-brand-500 dark:hover:bg-brand-600',
+  secondary: 'bg-gray-100 text-gray-900 hover:bg-gray-200 dark:bg-gray-800',
+  outline: 'border border-gray-300 hover:bg-gray-50 dark:border-gray-600',
+  ghost: 'hover:bg-gray-100 dark:hover:bg-gray-800',
+  destructive: 'bg-red-600 text-white hover:bg-red-700',
+  link: 'text-brand-600 underline-offset-4 hover:underline',
 };
 ```
 
@@ -89,20 +88,21 @@ Combined with `optimizePackageImports: ['@platform/ui']` in Next.js config, only
 
 ```typescript
 const config: StorybookConfig = {
-  stories: ["../src/**/*.stories.@(ts|tsx)"],
+  stories: ['../src/**/*.stories.@(ts|tsx)'],
   addons: [
-    "@storybook/addon-essentials", // Docs, controls, actions, viewport
-    "@storybook/addon-a11y", // Accessibility audit panel
-    "@storybook/addon-interactions", // Play function testing
-    "@storybook/addon-themes", // Theme switcher
+    '@storybook/addon-essentials', // Docs, controls, actions, viewport
+    '@storybook/addon-a11y', // Accessibility audit panel
+    '@storybook/addon-interactions', // Play function testing
+    '@storybook/addon-themes', // Theme switcher
   ],
-  framework: { name: "@storybook/nextjs", options: {} },
+  framework: { name: '@storybook/nextjs', options: {} },
 };
 ```
 
 ### Chromatic Integration
 
 On every PR, the CI pipeline:
+
 1. Builds static Storybook
 2. Pushes to Chromatic for pixel-level visual diff testing
 3. Flags visual regressions before merge
@@ -112,16 +112,14 @@ On every PR, the CI pipeline:
 **File:** `packages/ui/src/themes/theme-provider.tsx`
 
 ```typescript
-export function ThemeProvider({ children, defaultTheme = "light" }) {
+export function ThemeProvider({ children, defaultTheme = 'light' }) {
   const [theme, setTheme] = useState<Theme>(defaultTheme);
-  const [resolvedTheme, setResolvedTheme] = useState<"light" | "dark">("light");
+  const [resolvedTheme, setResolvedTheme] = useState<'light' | 'dark'>('light');
 
   useEffect(() => {
-    if (theme === "system") {
+    if (theme === 'system') {
       setResolvedTheme(
-        window.matchMedia("(prefers-color-scheme: dark)").matches
-          ? "dark"
-          : "light"
+        window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light',
       );
     } else {
       setResolvedTheme(theme);
@@ -129,28 +127,28 @@ export function ThemeProvider({ children, defaultTheme = "light" }) {
   }, [theme]);
 
   useEffect(() => {
-    document.documentElement.classList.toggle("dark", resolvedTheme === "dark");
+    document.documentElement.classList.toggle('dark', resolvedTheme === 'dark');
   }, [resolvedTheme]);
 }
 ```
 
 ## Communication with Other Technologies
 
-| Technology    | How UI Library Interacts                                        |
-| ------------- | --------------------------------------------------------------- |
-| Tailwind CSS  | All components styled with Tailwind utilities + `cn()`          |
-| ThemeProvider  | Toggles `dark` class on `<html>` for dark mode variants         |
-| Storybook     | Documents and visually tests all components                     |
-| Chromatic     | Visual regression testing on every PR                           |
-| Next.js       | `optimizePackageImports` tree-shakes unused components          |
+| Technology    | How UI Library Interacts                                         |
+| ------------- | ---------------------------------------------------------------- |
+| Tailwind CSS  | All components styled with Tailwind utilities + `cn()`           |
+| ThemeProvider | Toggles `dark` class on `<html>` for dark mode variants          |
+| Storybook     | Documents and visually tests all components                      |
+| Chromatic     | Visual regression testing on every PR                            |
+| Next.js       | `optimizePackageImports` tree-shakes unused components           |
 | TypeScript    | All props typed with interfaces, generics for complex components |
-| Zustand       | `useToast` hook manages toast state internally                  |
+| Zustand       | `useToast` hook manages toast state internally                   |
 
 ## Key Files
 
-| File                                          | Purpose                    |
-| --------------------------------------------- | -------------------------- |
-| `packages/ui/src/components/*/`               | Component implementations  |
-| `packages/ui/src/themes/theme-provider.tsx`   | ThemeProvider + useTheme   |
-| `packages/ui/src/themes/globals.css`          | CSS variables              |
-| `packages/ui/.storybook/main.ts`             | Storybook configuration    |
+| File                                        | Purpose                   |
+| ------------------------------------------- | ------------------------- |
+| `packages/ui/src/components/*/`             | Component implementations |
+| `packages/ui/src/themes/theme-provider.tsx` | ThemeProvider + useTheme  |
+| `packages/ui/src/themes/globals.css`        | CSS variables             |
+| `packages/ui/.storybook/main.ts`            | Storybook configuration   |

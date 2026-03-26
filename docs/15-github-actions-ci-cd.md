@@ -51,10 +51,10 @@ lint-test-build:
         node-version: 20
         cache: npm
     - run: npm ci
-    - run: npm run lint          # ESLint across all packages
-    - run: npm run format:check  # Prettier formatting check
-    - run: npm run test          # Jest unit tests
-    - run: npm run build         # Turbo build all apps
+    - run: npm run lint # ESLint across all packages
+    - run: npm run format:check # Prettier formatting check
+    - run: npm run test # Jest unit tests
+    - run: npm run build # Turbo build all apps
 ```
 
 ### 2. Storybook & Chromatic (PR Only)
@@ -127,22 +127,22 @@ Uses `@commitlint/config-conventional` to enforce conventional commit messages (
 
 ## Communication with Other Technologies
 
-| Technology     | How CI/CD Interacts                                          |
-| -------------- | ------------------------------------------------------------ |
-| Turborepo      | `npm run build` invokes `turbo build` with dependency graph  |
-| ESLint         | `npm run lint` runs ESLint across all packages               |
-| Prettier       | `npm run format:check` verifies formatting                   |
-| Jest           | `npm run test` runs unit tests with coverage                 |
-| Storybook      | Built and pushed to Chromatic on PRs                         |
-| Docker         | Matrix builds 4 images using the shared Dockerfile           |
-| AWS ECR        | Docker images pushed with SHA + latest tags                  |
-| Husky          | Pre-commit hooks run lint-staged locally                     |
-| Commitlint     | Enforces conventional commit message format                  |
+| Technology | How CI/CD Interacts                                         |
+| ---------- | ----------------------------------------------------------- |
+| Turborepo  | `npm run build` invokes `turbo build` with dependency graph |
+| ESLint     | `npm run lint` runs ESLint across all packages              |
+| Prettier   | `npm run format:check` verifies formatting                  |
+| Jest       | `npm run test` runs unit tests with coverage                |
+| Storybook  | Built and pushed to Chromatic on PRs                        |
+| Docker     | Matrix builds 4 images using the shared Dockerfile          |
+| AWS ECR    | Docker images pushed with SHA + latest tags                 |
+| Husky      | Pre-commit hooks run lint-staged locally                    |
+| Commitlint | Enforces conventional commit message format                 |
 
 ## Key Files
 
-| File                            | Purpose                            |
-| ------------------------------- | ---------------------------------- |
-| `.github/workflows/ci.yml`     | Full CI/CD pipeline definition     |
-| `commitlint.config.js`         | Commit message rules               |
-| `package.json` (lint-staged)   | Pre-commit hook configuration      |
+| File                         | Purpose                        |
+| ---------------------------- | ------------------------------ |
+| `.github/workflows/ci.yml`   | Full CI/CD pipeline definition |
+| `commitlint.config.js`       | Commit message rules           |
+| `package.json` (lint-staged) | Pre-commit hook configuration  |

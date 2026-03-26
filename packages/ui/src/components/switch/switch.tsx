@@ -16,18 +16,36 @@ const sizeConfig = {
   md: { track: 'h-6 w-11', thumb: 'h-4 w-4', translate: 'translate-x-5' },
 };
 
-export function Switch({ checked, onChange, label, disabled, size = 'md', className }: SwitchProps) {
+export function Switch({
+  checked,
+  onChange,
+  label,
+  disabled,
+  size = 'md',
+  className,
+}: SwitchProps) {
   const cfg = sizeConfig[size];
 
   return (
-    <label className={cn('inline-flex items-center gap-2', disabled && 'cursor-not-allowed opacity-50', className)}>
+    <label
+      className={cn(
+        'inline-flex items-center gap-2',
+        disabled && 'cursor-not-allowed opacity-50',
+        className,
+      )}
+    >
       <button
         role="switch"
         aria-checked={checked}
         aria-label={label}
         disabled={disabled}
         onClick={() => onChange(!checked)}
-        onKeyDown={(e) => { if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); onChange(!checked); } }}
+        onKeyDown={(e) => {
+          if (e.key === ' ' || e.key === 'Enter') {
+            e.preventDefault();
+            onChange(!checked);
+          }
+        }}
         className={cn(
           'relative inline-flex shrink-0 cursor-pointer rounded-full transition-colors',
           cfg.track,

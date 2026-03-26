@@ -3,7 +3,14 @@ export { Button, type ButtonProps } from './components/button';
 export { Input, type InputProps } from './components/input';
 export { Modal, type ModalProps } from './components/modal';
 export { Card, CardHeader, CardBody, CardFooter, type CardProps } from './components/card';
-export { Table, TableHead, TableBody, TableRow, TableCell, type TableProps } from './components/table';
+export {
+  Table,
+  TableHead,
+  TableBody,
+  TableRow,
+  TableCell,
+  type TableProps,
+} from './components/table';
 export { Tabs, TabList, Tab, TabPanel, type TabsProps } from './components/tabs';
 export { Dropdown, type DropdownProps } from './components/dropdown';
 export { Toast, ToastProvider, useToast, type ToastProps } from './components/toast';

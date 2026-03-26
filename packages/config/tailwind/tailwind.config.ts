@@ -10,11 +10,7 @@ import type { Config } from 'tailwindcss';
  * - Font: Inter via CSS variable so Next.js font optimization works
  */
 const config: Config = {
-  content: [
-    './src/**/*.{ts,tsx}',
-    './app/**/*.{ts,tsx}',
-    '../../packages/ui/src/**/*.{ts,tsx}',
-  ],
+  content: ['./src/**/*.{ts,tsx}', './app/**/*.{ts,tsx}', '../../packages/ui/src/**/*.{ts,tsx}'],
   darkMode: 'class',
   theme: {
     extend: {

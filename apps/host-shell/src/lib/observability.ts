@@ -41,7 +41,10 @@ export function captureException(error: Error, context?: Record<string, unknown>
   console.error('[Sentry] Capture exception:', error.message, context);
 }
 
-export function captureMessage(message: string, level: 'info' | 'warning' | 'error' = 'info'): void {
+export function captureMessage(
+  message: string,
+  level: 'info' | 'warning' | 'error' = 'info',
+): void {
   // Placeholder: replace with Sentry.captureMessage(message, level)
   console.info(`[Sentry] [${level}] ${message}`);
 }

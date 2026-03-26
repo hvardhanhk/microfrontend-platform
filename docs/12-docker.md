@@ -51,23 +51,23 @@ CMD ["node", "server.js"]
 
 ### Stage Breakdown
 
-| Stage    | Purpose                     | What Stays in Final Image |
-| -------- | --------------------------- | ------------------------- |
-| `base`   | Alpine + libc6-compat       | Base layer                |
-| `deps`   | `npm ci` (all dependencies) | Nothing (discarded)       |
-| `builder`| Turbo build                 | Nothing (discarded)       |
-| `runner` | Production runtime          | Standalone output only    |
+| Stage     | Purpose                     | What Stays in Final Image |
+| --------- | --------------------------- | ------------------------- |
+| `base`    | Alpine + libc6-compat       | Base layer                |
+| `deps`    | `npm ci` (all dependencies) | Nothing (discarded)       |
+| `builder` | Turbo build                 | Nothing (discarded)       |
+| `runner`  | Production runtime          | Standalone output only    |
 
 ### Key Optimizations
 
-| Optimization                | Benefit                                            |
-| --------------------------- | -------------------------------------------------- |
-| Multi-stage build           | Final image only contains standalone output (~150MB)|
-| `npm ci` in deps stage      | Cached unless `package-lock.json` changes          |
-| Non-root user (nextjs:1001) | Security: container runs without root privileges    |
-| `NEXT_TELEMETRY_DISABLED`   | No telemetry in builds or runtime                  |
-| Next.js standalone output   | Self-contained `server.js` — no `node_modules`     |
-| Alpine base                 | Minimal OS layer (~5MB)                            |
+| Optimization                | Benefit                                              |
+| --------------------------- | ---------------------------------------------------- |
+| Multi-stage build           | Final image only contains standalone output (~150MB) |
+| `npm ci` in deps stage      | Cached unless `package-lock.json` changes            |
+| Non-root user (nextjs:1001) | Security: container runs without root privileges     |
+| `NEXT_TELEMETRY_DISABLED`   | No telemetry in builds or runtime                    |
+| Next.js standalone output   | Self-contained `server.js` — no `node_modules`       |
+| Alpine base                 | Minimal OS layer (~5MB)                              |
 
 ### Build Command
 
@@ -87,7 +87,7 @@ The `APP_NAME` build arg selects which app to build. The same Dockerfile serves 
 **File:** `infra/docker/docker-compose.yml`
 
 ```yaml
-version: "3.8"
+version: '3.8'
 
 services:
   host-shell:
@@ -97,7 +97,7 @@ services:
       args:
         APP_NAME: host-shell
     ports:
-      - "3000:3000"
+      - '3000:3000'
     environment:
       - NODE_ENV=production
 
@@ -106,31 +106,31 @@ services:
       args:
         APP_NAME: mfe-products
     ports:
-      - "3001:3000"
+      - '3001:3000'
 
   mfe-cart:
     build:
       args:
         APP_NAME: mfe-cart
     ports:
-      - "3002:3000"
+      - '3002:3000'
 
   mfe-user:
     build:
       args:
         APP_NAME: mfe-user
     ports:
-      - "3003:3000"
+      - '3003:3000'
 ```
 
 ### Port Mapping
 
-| Service       | Container Port | Host Port |
-| ------------- | -------------- | --------- |
-| host-shell    | 3000           | 3000      |
-| mfe-products  | 3000           | 3001      |
-| mfe-cart      | 3000           | 3002      |
-| mfe-user      | 3000           | 3003      |
+| Service      | Container Port | Host Port |
+| ------------ | -------------- | --------- |
+| host-shell   | 3000           | 3000      |
+| mfe-products | 3000           | 3001      |
+| mfe-cart     | 3000           | 3002      |
+| mfe-user     | 3000           | 3003      |
 
 ### Commands
 
@@ -147,17 +147,17 @@ docker-compose -f infra/docker/docker-compose.yml down
 
 ## Communication with Other Technologies
 
-| Technology    | How Docker Interacts                                             |
-| ------------- | ---------------------------------------------------------------- |
-| Turborepo     | Builder stage runs `npx turbo build --filter=@platform/${APP_NAME}` |
-| Next.js       | Standalone output mode produces self-contained `server.js`       |
-| GitHub Actions| CI builds Docker images in matrix and pushes to ECR              |
-| Kubernetes    | K8s deployments pull images from ECR                             |
-| AWS ECR       | Container registry stores tagged images                          |
+| Technology     | How Docker Interacts                                                |
+| -------------- | ------------------------------------------------------------------- |
+| Turborepo      | Builder stage runs `npx turbo build --filter=@platform/${APP_NAME}` |
+| Next.js        | Standalone output mode produces self-contained `server.js`          |
+| GitHub Actions | CI builds Docker images in matrix and pushes to ECR                 |
+| Kubernetes     | K8s deployments pull images from ECR                                |
+| AWS ECR        | Container registry stores tagged images                             |
 
 ## Key Files
 
-| File                               | Purpose                        |
-| ---------------------------------- | ------------------------------ |
-| `infra/docker/Dockerfile.app`      | Multi-stage build for all apps |
-| `infra/docker/docker-compose.yml`  | Local multi-service orchestration |
+| File                              | Purpose                           |
+| --------------------------------- | --------------------------------- |
+| `infra/docker/Dockerfile.app`     | Multi-stage build for all apps    |
+| `infra/docker/docker-compose.yml` | Local multi-service orchestration |

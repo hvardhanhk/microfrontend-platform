@@ -11,29 +11,23 @@ The platform implements four observability pillars: **error tracking** (Sentry),
 ```typescript
 export function initSentry(config?: Partial<SentryConfig>): void {
   const config = {
-    dsn: process.env.NEXT_PUBLIC_SENTRY_DSN || "",
-    environment: process.env.NODE_ENV || "development",
-    release: process.env.NEXT_PUBLIC_APP_VERSION || "0.0.0",
-    tracesSampleRate: process.env.NODE_ENV === "production" ? 0.1 : 1.0,
+    dsn: process.env.NEXT_PUBLIC_SENTRY_DSN || '',
+    environment: process.env.NODE_ENV || 'development',
+    release: process.env.NEXT_PUBLIC_APP_VERSION || '0.0.0',
+    tracesSampleRate: process.env.NODE_ENV === 'production' ? 0.1 : 1.0,
   };
   // Placeholder: replace with Sentry.init()
 }
 
-export function captureException(
-  error: Error,
-  context?: Record<string, unknown>
-): void;
-export function captureMessage(
-  message: string,
-  level: "info" | "warning" | "error"
-): void;
+export function captureException(error: Error, context?: Record<string, unknown>): void;
+export function captureMessage(message: string, level: 'info' | 'warning' | 'error'): void;
 ```
 
-| Setting              | Production | Development | Purpose                         |
-| -------------------- | ---------- | ----------- | ------------------------------- |
-| `tracesSampleRate`   | 0.1 (10%)  | 1.0 (100%)  | Balance cost vs visibility      |
-| `environment`        | production | development | Separate dashboards per env     |
-| `release`            | App version| 0.0.0       | Correlate errors with deploys   |
+| Setting            | Production  | Development | Purpose                       |
+| ------------------ | ----------- | ----------- | ----------------------------- |
+| `tracesSampleRate` | 0.1 (10%)   | 1.0 (100%)  | Balance cost vs visibility    |
+| `environment`      | production  | development | Separate dashboards per env   |
+| `release`          | App version | 0.0.0       | Correlate errors with deploys |
 
 ## Datadog RUM (Real User Monitoring)
 
@@ -42,27 +36,23 @@ export function initDatadog(config?: Partial<DatadogConfig>): void {
   const config = {
     applicationId: process.env.NEXT_PUBLIC_DD_APP_ID,
     clientToken: process.env.NEXT_PUBLIC_DD_CLIENT_TOKEN,
-    sessionSampleRate: 100,        // Record 100% of sessions
-    sessionReplaySampleRate: 20,   // Replay 20% of sessions
-    trackUserInteractions: true,   // Click, scroll, etc.
-    trackResources: true,          // API calls, images, scripts
-    trackLongTasks: true,          // Tasks > 50ms
+    sessionSampleRate: 100, // Record 100% of sessions
+    sessionReplaySampleRate: 20, // Replay 20% of sessions
+    trackUserInteractions: true, // Click, scroll, etc.
+    trackResources: true, // API calls, images, scripts
+    trackLongTasks: true, // Tasks > 50ms
   };
 }
 
-export function setDatadogUser(user: {
-  id: string;
-  email?: string;
-  name?: string;
-}): void;
+export function setDatadogUser(user: { id: string; email?: string; name?: string }): void;
 ```
 
-| Metric                  | Rate | Purpose                                |
-| ----------------------- | ---- | -------------------------------------- |
-| Session sample          | 100% | Full visibility into user behavior     |
-| Session replay          | 20%  | Balance storage cost vs debugging need |
-| User interactions       | All  | Heatmaps, click maps, rage clicks     |
-| Long tasks              | All  | Identify JS bottlenecks                |
+| Metric            | Rate | Purpose                                |
+| ----------------- | ---- | -------------------------------------- |
+| Session sample    | 100% | Full visibility into user behavior     |
+| Session replay    | 20%  | Balance storage cost vs debugging need |
+| User interactions | All  | Heatmaps, click maps, rage clicks      |
+| Long tasks        | All  | Identify JS bottlenecks                |
 
 ## Structured Logger
 
@@ -70,12 +60,12 @@ export function setDatadogUser(user: {
 
 ```typescript
 class Logger {
-  constructor(private service = "platform") {}
+  constructor(private service = 'platform') {}
 
   private log(level, message, context?) {
     const entry = { level, message, context, timestamp, service };
 
-    if (process.env.NODE_ENV === "production") {
+    if (process.env.NODE_ENV === 'production') {
       // JSON output for CloudWatch/Datadog log ingestion
       console[method](JSON.stringify(entry));
     } else {
@@ -98,10 +88,10 @@ class Logger {
 ### Usage
 
 ```typescript
-import { logger } from "@platform/utils";
+import { logger } from '@platform/utils';
 
-const authLogger = logger.child("auth");
-authLogger.info("User logged in", { userId: "user_1" });
+const authLogger = logger.child('auth');
+authLogger.info('User logged in', { userId: 'user_1' });
 // Production: {"level":"info","message":"User logged in","context":{"userId":"user_1"},"timestamp":"...","service":"platform:auth"}
 // Development: [2026-03-26T...] [INFO] [platform:auth] User logged in { userId: 'user_1' }
 ```
@@ -117,20 +107,20 @@ export function reportWebVitals(metric: {
   id: string;
   rating: string; // 'good', 'needs-improvement', 'poor'
 }): void {
-  if (process.env.NODE_ENV === "production" && process.env.NEXT_PUBLIC_ANALYTICS_URL) {
+  if (process.env.NODE_ENV === 'production' && process.env.NEXT_PUBLIC_ANALYTICS_URL) {
     navigator.sendBeacon(
       process.env.NEXT_PUBLIC_ANALYTICS_URL,
-      JSON.stringify({ ...metric, timestamp: Date.now() })
+      JSON.stringify({ ...metric, timestamp: Date.now() }),
     );
   }
 }
 ```
 
-| Metric | Target  | Measures                              |
-| ------ | ------- | ------------------------------------- |
-| LCP    | < 2.5s  | Largest Contentful Paint              |
-| CLS    | < 0.1   | Cumulative Layout Shift               |
-| INP    | < 200ms | Interaction to Next Paint             |
+| Metric | Target  | Measures                  |
+| ------ | ------- | ------------------------- |
+| LCP    | < 2.5s  | Largest Contentful Paint  |
+| CLS    | < 0.1   | Cumulative Layout Shift   |
+| INP    | < 200ms | Interaction to Next Paint |
 
 Uses `navigator.sendBeacon` for reliable delivery even during page unload.
 
@@ -141,7 +131,7 @@ Uses `navigator.sendBeacon` for reliable delivery even during page unload.
 ```typescript
 export function rateLimit(
   request: NextRequest,
-  config = { limit: 60, windowMs: 60_000 }
+  config = { limit: 60, windowMs: 60_000 },
 ): NextResponse | null {
   // Sliding window in-memory limiter
   // Key: IP:pathname
@@ -169,19 +159,19 @@ Both are initialized once on app mount in the client-side provider tree.
 
 ## Communication with Other Technologies
 
-| Technology     | How Observability Interacts                                   |
-| -------------- | ------------------------------------------------------------- |
-| Next.js        | Web Vitals reported from Next.js performance hooks            |
-| React          | Error boundaries can call `captureException()`                |
-| Providers      | `initSentry()` and `initDatadog()` called in provider useEffect |
-| API Client     | Failed requests can be logged via structured logger           |
-| Rate Limiter   | Returns 429 status with headers for API routes                |
+| Technology   | How Observability Interacts                                     |
+| ------------ | --------------------------------------------------------------- |
+| Next.js      | Web Vitals reported from Next.js performance hooks              |
+| React        | Error boundaries can call `captureException()`                  |
+| Providers    | `initSentry()` and `initDatadog()` called in provider useEffect |
+| API Client   | Failed requests can be logged via structured logger             |
+| Rate Limiter | Returns 429 status with headers for API routes                  |
 
 ## Key Files
 
-| File                                         | Purpose                     |
-| -------------------------------------------- | --------------------------- |
-| `apps/host-shell/src/lib/observability.ts`   | Sentry + Datadog setup      |
-| `packages/utils/src/logger.ts`               | Structured JSON logger      |
-| `packages/utils/src/web-vitals.ts`           | Core Web Vitals reporting   |
-| `apps/host-shell/src/lib/rate-limit.ts`      | In-memory rate limiter      |
+| File                                       | Purpose                   |
+| ------------------------------------------ | ------------------------- |
+| `apps/host-shell/src/lib/observability.ts` | Sentry + Datadog setup    |
+| `packages/utils/src/logger.ts`             | Structured JSON logger    |
+| `packages/utils/src/web-vitals.ts`         | Core Web Vitals reporting |
+| `apps/host-shell/src/lib/rate-limit.ts`    | In-memory rate limiter    |

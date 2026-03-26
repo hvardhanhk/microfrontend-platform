@@ -41,10 +41,10 @@ Each MFE is lazily loaded using `next/dynamic` to enable code splitting:
 
 ```tsx
 // apps/host-shell/src/app/dashboard/page.tsx
-import dynamic from "next/dynamic";
-import { Spinner } from "@platform/ui";
+import dynamic from 'next/dynamic';
+import { Spinner } from '@platform/ui';
 
-const UserMfe = dynamic(() => import("@/components/mfe/user-mfe"), {
+const UserMfe = dynamic(() => import('@/components/mfe/user-mfe'), {
   loading: () => (
     <div className="flex h-96 items-center justify-center">
       <Spinner size="lg" />
@@ -52,7 +52,7 @@ const UserMfe = dynamic(() => import("@/components/mfe/user-mfe"), {
   ),
 });
 
-export const metadata = { title: "Dashboard" };
+export const metadata = { title: 'Dashboard' };
 
 export default function Dashboard() {
   return <UserMfe />;
@@ -67,37 +67,37 @@ export default function Dashboard() {
 const nextConfig: NextConfig = {
   // Required: compile workspace TypeScript packages
   transpilePackages: [
-    "@platform/ui",
-    "@platform/shared-state",
-    "@platform/event-bus",
-    "@platform/auth",
-    "@platform/api-client",
-    "@platform/types",
-    "@platform/utils",
+    '@platform/ui',
+    '@platform/shared-state',
+    '@platform/event-bus',
+    '@platform/auth',
+    '@platform/api-client',
+    '@platform/types',
+    '@platform/utils',
   ],
 
   // Tree-shake unused UI components from the bundle
   experimental: {
-    optimizePackageImports: ["@platform/ui"],
+    optimizePackageImports: ['@platform/ui'],
   },
 
   // Image optimization: AVIF + WebP formats
   images: {
-    remotePatterns: [{ protocol: "https", hostname: "picsum.photos" }],
-    formats: ["image/avif", "image/webp"],
+    remotePatterns: [{ protocol: 'https', hostname: 'picsum.photos' }],
+    formats: ['image/avif', 'image/webp'],
   },
 
   // Security headers
   headers: async () => [
     {
-      source: "/(.*)",
+      source: '/(.*)',
       headers: [
-        { key: "X-Frame-Options", value: "DENY" },
-        { key: "X-Content-Type-Options", value: "nosniff" },
-        { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+        { key: 'X-Frame-Options', value: 'DENY' },
+        { key: 'X-Content-Type-Options', value: 'nosniff' },
+        { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
         {
-          key: "Permissions-Policy",
-          value: "camera=(), microphone=(), geolocation=()",
+          key: 'Permissions-Policy',
+          value: 'camera=(), microphone=(), geolocation=()',
         },
       ],
     },
@@ -117,7 +117,7 @@ Runs at the CDN edge before the request reaches the origin server:
 
 ```typescript
 export const config = {
-  matcher: ["/((?!_next/static|_next/image|favicon.ico|api/).*)"],
+  matcher: ['/((?!_next/static|_next/image|favicon.ico|api/).*)'],
 };
 ```
 
@@ -127,30 +127,30 @@ The matcher excludes static assets and API routes from middleware processing.
 
 Next.js Route Handlers serve as the backend API:
 
-| Route                | Method | Purpose                                 |
-| -------------------- | ------ | --------------------------------------- |
-| `/api/auth/login`    | POST   | Authenticate user, set JWT cookie       |
-| `/api/auth/logout`   | POST   | Delete JWT cookie                       |
-| `/api/auth/me`       | GET    | Verify JWT, return user data            |
-| `/api/auth/refresh`  | POST   | Refresh access token                    |
+| Route               | Method | Purpose                           |
+| ------------------- | ------ | --------------------------------- |
+| `/api/auth/login`   | POST   | Authenticate user, set JWT cookie |
+| `/api/auth/logout`  | POST   | Delete JWT cookie                 |
+| `/api/auth/me`      | GET    | Verify JWT, return user data      |
+| `/api/auth/refresh` | POST   | Refresh access token              |
 
 ### Communication with Other Technologies
 
-| Technology     | How Next.js Interacts                                              |
-| -------------- | ------------------------------------------------------------------ |
-| Tailwind CSS   | Compiled via PostCSS in Next.js build pipeline                     |
-| TypeScript     | Compiled by Next.js (SWC compiler), strict mode via tsconfig       |
-| Zustand        | Client components import stores directly                           |
-| Event Bus      | Client components use `useEventBus` hook                           |
-| JWT (jose)     | API routes create/verify tokens, middleware reads cookies           |
-| Docker         | Next.js standalone output mode for minimal Docker images           |
-| Turborepo      | `turbo build` orchestrates Next.js builds across all apps          |
+| Technology   | How Next.js Interacts                                        |
+| ------------ | ------------------------------------------------------------ |
+| Tailwind CSS | Compiled via PostCSS in Next.js build pipeline               |
+| TypeScript   | Compiled by Next.js (SWC compiler), strict mode via tsconfig |
+| Zustand      | Client components import stores directly                     |
+| Event Bus    | Client components use `useEventBus` hook                     |
+| JWT (jose)   | API routes create/verify tokens, middleware reads cookies    |
+| Docker       | Next.js standalone output mode for minimal Docker images     |
+| Turborepo    | `turbo build` orchestrates Next.js builds across all apps    |
 
 ## Key Files
 
-| File                                        | Purpose                          |
-| ------------------------------------------- | -------------------------------- |
-| `apps/host-shell/next.config.ts`            | Next.js configuration            |
-| `apps/host-shell/src/app/layout.tsx`        | Root layout (server component)   |
-| `apps/host-shell/src/middleware.ts`          | Edge middleware                  |
+| File                                          | Purpose                        |
+| --------------------------------------------- | ------------------------------ |
+| `apps/host-shell/next.config.ts`              | Next.js configuration          |
+| `apps/host-shell/src/app/layout.tsx`          | Root layout (server component) |
+| `apps/host-shell/src/middleware.ts`           | Edge middleware                |
 | `apps/host-shell/src/app/api/auth/*/route.ts` | API route handlers             |

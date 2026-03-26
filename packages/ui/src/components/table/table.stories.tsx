@@ -2,7 +2,11 @@ import type { Meta, StoryObj } from '@storybook/react';
 
 import { Table, TableHead, TableBody, TableRow, TableCell } from './table';
 
-const meta: Meta<typeof Table> = { title: 'Components/Table', component: Table, tags: ['autodocs'] };
+const meta: Meta<typeof Table> = {
+  title: 'Components/Table',
+  component: Table,
+  tags: ['autodocs'],
+};
 export default meta;
 type Story = StoryObj<typeof Table>;
 

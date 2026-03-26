@@ -8,13 +8,13 @@ This platform implements a **microfrontend (MFE) architecture** where a single u
 
 ### Why App Router Composition (Not Module Federation)
 
-| Criteria                | App Router Composition | Module Federation       |
-| ----------------------- | ---------------------- | ----------------------- |
-| SSR Support             | Native (App Router)    | Requires extra config   |
-| Type Safety             | Compile-time via mono  | Runtime only            |
-| Developer Experience    | Simple imports         | Complex webpack config  |
-| Tree Shaking            | Automatic              | Manual setup            |
-| Independent Deployments | No (shared build)      | Yes                     |
+| Criteria                | App Router Composition | Module Federation      |
+| ----------------------- | ---------------------- | ---------------------- |
+| SSR Support             | Native (App Router)    | Requires extra config  |
+| Type Safety             | Compile-time via mono  | Runtime only           |
+| Developer Experience    | Simple imports         | Complex webpack config |
+| Tree Shaking            | Automatic              | Manual setup           |
+| Independent Deployments | No (shared build)      | Yes                    |
 
 We chose App Router composition for **compile-time type safety** and **SSR-first rendering**, accepting the trade-off of shared deployments.
 
@@ -38,7 +38,7 @@ The host shell is the **orchestrator**. It provides:
 
 ```tsx
 // apps/host-shell/src/app/products/page.tsx
-const ProductsMfe = dynamic(() => import("@/components/mfe/products-mfe"), {
+const ProductsMfe = dynamic(() => import('@/components/mfe/products-mfe'), {
   loading: () => <Spinner />,
 });
 ```
@@ -90,21 +90,21 @@ Products MFE calls `useCartStore.addItem()` → Zustand updates → Cart MFE re-
 
 ## Cross-Technology Communication
 
-| From         | To           | Mechanism                  | Example                                    |
-| ------------ | ------------ | -------------------------- | ------------------------------------------ |
-| Products MFE | Cart MFE     | Zustand store (shared)     | `useCartStore.addItem()` updates cart UI    |
-| Products MFE | App Shell    | Zustand store (shared)     | `cartItemCount` drives navbar badge         |
-| Any MFE      | Any MFE      | EventBus pub/sub           | `auth:logout` triggers all MFEs to clean up |
-| Host Shell   | Edge CDN     | Next.js Middleware          | Auth gate runs before origin                |
-| Auth Package | API Routes   | HTTP (fetch + cookies)     | `POST /api/auth/login` sets JWT cookie      |
-| Feature Flags| UI Components| Zustand + FeatureGate      | Flag check wraps conditional rendering      |
+| From          | To            | Mechanism              | Example                                     |
+| ------------- | ------------- | ---------------------- | ------------------------------------------- |
+| Products MFE  | Cart MFE      | Zustand store (shared) | `useCartStore.addItem()` updates cart UI    |
+| Products MFE  | App Shell     | Zustand store (shared) | `cartItemCount` drives navbar badge         |
+| Any MFE       | Any MFE       | EventBus pub/sub       | `auth:logout` triggers all MFEs to clean up |
+| Host Shell    | Edge CDN      | Next.js Middleware     | Auth gate runs before origin                |
+| Auth Package  | API Routes    | HTTP (fetch + cookies) | `POST /api/auth/login` sets JWT cookie      |
+| Feature Flags | UI Components | Zustand + FeatureGate  | Flag check wraps conditional rendering      |
 
 ## Key Files
 
-| File                                              | Purpose                       |
-| ------------------------------------------------- | ----------------------------- |
-| `apps/host-shell/src/app/layout.tsx`              | Root layout with providers    |
-| `apps/host-shell/src/components/app-shell.tsx`    | Persistent nav shell          |
-| `apps/host-shell/src/components/mfe/*.tsx`        | MFE client components         |
-| `apps/host-shell/src/middleware.ts`               | Edge middleware               |
-| `apps/host-shell/src/components/providers.tsx`    | Client provider tree          |
+| File                                           | Purpose                    |
+| ---------------------------------------------- | -------------------------- |
+| `apps/host-shell/src/app/layout.tsx`           | Root layout with providers |
+| `apps/host-shell/src/components/app-shell.tsx` | Persistent nav shell       |
+| `apps/host-shell/src/components/mfe/*.tsx`     | MFE client components      |
+| `apps/host-shell/src/middleware.ts`            | Edge middleware            |
+| `apps/host-shell/src/components/providers.tsx` | Client provider tree       |

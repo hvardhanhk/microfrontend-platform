@@ -54,15 +54,15 @@ spec:
 
 ### Configuration Explained
 
-| Setting           | Value          | Purpose                                          |
-| ----------------- | -------------- | ------------------------------------------------ |
-| `replicas: 3`     | 3 pods         | High availability + load distribution            |
-| `requests.cpu`    | 100m           | Guaranteed CPU (0.1 core)                        |
-| `limits.cpu`      | 500m           | Max CPU burst (0.5 core)                         |
-| `requests.memory` | 128Mi          | Guaranteed memory                                |
-| `limits.memory`   | 512Mi          | Max memory (OOM killed if exceeded)              |
-| `livenessProbe`   | HTTP GET /     | Restart container if unhealthy (30s interval)    |
-| `readinessProbe`  | HTTP GET /     | Don't route traffic until ready (10s interval)   |
+| Setting           | Value      | Purpose                                        |
+| ----------------- | ---------- | ---------------------------------------------- |
+| `replicas: 3`     | 3 pods     | High availability + load distribution          |
+| `requests.cpu`    | 100m       | Guaranteed CPU (0.1 core)                      |
+| `limits.cpu`      | 500m       | Max CPU burst (0.5 core)                       |
+| `requests.memory` | 128Mi      | Guaranteed memory                              |
+| `limits.memory`   | 512Mi      | Max memory (OOM killed if exceeded)            |
+| `livenessProbe`   | HTTP GET / | Restart container if unhealthy (30s interval)  |
+| `readinessProbe`  | HTTP GET / | Don't route traffic until ready (10s interval) |
 
 ## Service
 
@@ -95,7 +95,7 @@ metadata:
   name: platform-ingress
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /
-    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/ssl-redirect: 'true'
 spec:
   ingressClassName: nginx
   tls:
@@ -136,18 +136,18 @@ Service: host-shell (ClusterIP :80)
 
 ## Communication with Other Technologies
 
-| Technology     | How K8s Interacts                                              |
-| -------------- | -------------------------------------------------------------- |
-| Docker         | K8s pulls container images built by Docker                     |
-| AWS ECR        | Image registry: `${ECR_REGISTRY}/platform/host-shell:latest`  |
-| Terraform      | Provisions ECR repositories that K8s pulls from                |
-| GitHub Actions | CI pushes images to ECR; K8s pulls latest on deploy            |
-| Next.js        | Standalone output runs as `node server.js` in containers       |
+| Technology     | How K8s Interacts                                            |
+| -------------- | ------------------------------------------------------------ |
+| Docker         | K8s pulls container images built by Docker                   |
+| AWS ECR        | Image registry: `${ECR_REGISTRY}/platform/host-shell:latest` |
+| Terraform      | Provisions ECR repositories that K8s pulls from              |
+| GitHub Actions | CI pushes images to ECR; K8s pulls latest on deploy          |
+| Next.js        | Standalone output runs as `node server.js` in containers     |
 
 ## Key Files
 
-| File                          | Purpose                         |
-| ----------------------------- | ------------------------------- |
-| `infra/k8s/deployment.yaml`  | Pod template + replicas + probes |
-| `infra/k8s/service.yaml`     | ClusterIP service                |
-| `infra/k8s/ingress.yaml`     | TLS Ingress rules                |
+| File                        | Purpose                          |
+| --------------------------- | -------------------------------- |
+| `infra/k8s/deployment.yaml` | Pod template + replicas + probes |
+| `infra/k8s/service.yaml`    | ClusterIP service                |
+| `infra/k8s/ingress.yaml`    | TLS Ingress rules                |

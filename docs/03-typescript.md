@@ -27,16 +27,16 @@ The entire platform is written in **TypeScript** with **strict mode** enabled. A
 
 ### Key Compiler Options Explained
 
-| Option              | Value      | Why                                                                 |
-| ------------------- | ---------- | ------------------------------------------------------------------- |
-| `strict`            | `true`     | Enables all strict type-checking (noImplicitAny, strictNullChecks, etc.) |
-| `target`            | `ES2022`   | Modern JS features (top-level await, class fields)                  |
-| `moduleResolution`  | `bundler`  | Node.js 16+ resolution — supports package.json `exports`           |
-| `isolatedModules`   | `true`     | Each file transpilable independently (required for SWC/esbuild)    |
-| `noEmit`            | `true`     | TypeScript only type-checks; bundler (Next.js/SWC) handles emit    |
-| `declaration`       | `true`     | Generates `.d.ts` files for package consumers                      |
-| `declarationMap`    | `true`     | Source maps for declarations — enables "Go to Definition" in IDE   |
-| `jsx`               | `react-jsx`| Automatic JSX transform (no `import React` needed)                 |
+| Option             | Value       | Why                                                                      |
+| ------------------ | ----------- | ------------------------------------------------------------------------ |
+| `strict`           | `true`      | Enables all strict type-checking (noImplicitAny, strictNullChecks, etc.) |
+| `target`           | `ES2022`    | Modern JS features (top-level await, class fields)                       |
+| `moduleResolution` | `bundler`   | Node.js 16+ resolution — supports package.json `exports`                 |
+| `isolatedModules`  | `true`      | Each file transpilable independently (required for SWC/esbuild)          |
+| `noEmit`           | `true`      | TypeScript only type-checks; bundler (Next.js/SWC) handles emit          |
+| `declaration`      | `true`      | Generates `.d.ts` files for package consumers                            |
+| `declarationMap`   | `true`      | Source maps for declarations — enables "Go to Definition" in IDE         |
+| `jsx`              | `react-jsx` | Automatic JSX transform (no `import React` needed)                       |
 
 ## Centralized Type System
 
@@ -44,14 +44,14 @@ The entire platform is written in **TypeScript** with **strict mode** enabled. A
 
 ### Type Files
 
-| File          | Types Defined                                              |
-| ------------- | ---------------------------------------------------------- |
-| `events.ts`   | `EventMap`, `EventName`, `EventPayload<E>` — event bus registry |
-| `user.ts`     | `User`, `AuthTokens`, `LoginCredentials`, `AuthState`      |
-| `cart.ts`     | `Cart`, `CartItem`, `AddToCartPayload`, `CartState`        |
-| `product.ts`  | `Product`, `ProductVariant`, `ProductCategory`, `ProductFilters` |
-| `api.ts`      | `RequestConfig`, `ApiError`, `ApiEndpoints`, `DEFAULT_API_CONFIG` |
-| `common.ts`   | `PaginatedResponse<T>`, `Theme`, `FeatureFlag`, `GeoContext` |
+| File         | Types Defined                                                     |
+| ------------ | ----------------------------------------------------------------- |
+| `events.ts`  | `EventMap`, `EventName`, `EventPayload<E>` — event bus registry   |
+| `user.ts`    | `User`, `AuthTokens`, `LoginCredentials`, `AuthState`             |
+| `cart.ts`    | `Cart`, `CartItem`, `AddToCartPayload`, `CartState`               |
+| `product.ts` | `Product`, `ProductVariant`, `ProductCategory`, `ProductFilters`  |
+| `api.ts`     | `RequestConfig`, `ApiError`, `ApiEndpoints`, `DEFAULT_API_CONFIG` |
+| `common.ts`  | `PaginatedResponse<T>`, `Theme`, `FeatureFlag`, `GeoContext`      |
 
 ### EventMap — Type-Safe Cross-MFE Events
 
@@ -60,23 +60,23 @@ The `EventMap` interface is the backbone of type-safe cross-MFE communication:
 ```typescript
 export interface EventMap {
   // Auth events
-  "auth:login": { user: User };
-  "auth:logout": undefined;
-  "auth:token-refreshed": { expiresAt: number };
+  'auth:login': { user: User };
+  'auth:logout': undefined;
+  'auth:token-refreshed': { expiresAt: number };
 
   // Cart events
-  "cart:item-added": { item: CartItem };
-  "cart:item-removed": { itemId: string };
-  "cart:count-changed": { count: number };
+  'cart:item-added': { item: CartItem };
+  'cart:item-removed': { itemId: string };
+  'cart:count-changed': { count: number };
 
   // Product events
-  "product:add-to-cart": AddToCartPayload;
-  "product:viewed": { productId: string };
+  'product:add-to-cart': AddToCartPayload;
+  'product:viewed': { productId: string };
 
   // Theme / Feature / Notification events
-  "theme:changed": { theme: "light" | "dark" | "system" };
-  "feature:flag-updated": { name: string; enabled: boolean };
-  "notification:show": { type: "success" | "error"; message: string };
+  'theme:changed': { theme: 'light' | 'dark' | 'system' };
+  'feature:flag-updated': { name: string; enabled: boolean };
+  'notification:show': { type: 'success' | 'error'; message: string };
 }
 
 export type EventName = keyof EventMap;
@@ -115,23 +115,23 @@ rules: {
 
 ## Communication with Other Technologies
 
-| Technology   | How TypeScript Interacts                                                 |
-| ------------ | ------------------------------------------------------------------------ |
-| Event Bus    | `EventMap` enforces payload types at compile time for publish/subscribe  |
-| Zustand      | Store types are inferred from the `create<State & Actions>()` signature  |
-| Next.js      | Compiled by SWC (not tsc) — `noEmit: true` means tsc only type-checks   |
-| Jest         | `@swc/jest` handles TypeScript compilation during test runs              |
-| TanStack Query | Generic hooks: `useQuery<Product[]>` ensures response type safety      |
-| API Client   | `ApiClient.get<T>()` returns typed responses                            |
+| Technology     | How TypeScript Interacts                                                |
+| -------------- | ----------------------------------------------------------------------- |
+| Event Bus      | `EventMap` enforces payload types at compile time for publish/subscribe |
+| Zustand        | Store types are inferred from the `create<State & Actions>()` signature |
+| Next.js        | Compiled by SWC (not tsc) — `noEmit: true` means tsc only type-checks   |
+| Jest           | `@swc/jest` handles TypeScript compilation during test runs             |
+| TanStack Query | Generic hooks: `useQuery<Product[]>` ensures response type safety       |
+| API Client     | `ApiClient.get<T>()` returns typed responses                            |
 
 ## Key Files
 
-| File                              | Purpose                               |
-| --------------------------------- | ------------------------------------- |
-| `tsconfig.base.json`             | Root config extended by all packages  |
-| `packages/types/src/events.ts`   | EventMap type registry                |
-| `packages/types/src/cart.ts`     | Cart domain types                     |
-| `packages/types/src/product.ts`  | Product domain types                  |
-| `packages/types/src/user.ts`     | User/auth domain types                |
-| `packages/types/src/api.ts`      | API client types                      |
-| `packages/config/eslint/next.js` | TypeScript lint rules                 |
+| File                             | Purpose                              |
+| -------------------------------- | ------------------------------------ |
+| `tsconfig.base.json`             | Root config extended by all packages |
+| `packages/types/src/events.ts`   | EventMap type registry               |
+| `packages/types/src/cart.ts`     | Cart domain types                    |
+| `packages/types/src/product.ts`  | Product domain types                 |
+| `packages/types/src/user.ts`     | User/auth domain types               |
+| `packages/types/src/api.ts`      | API client types                     |
+| `packages/config/eslint/next.js` | TypeScript lint rules                |

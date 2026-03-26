@@ -22,29 +22,27 @@ interface FeatureFlagActions {
  * or a custom endpoint) at app startup. Changes propagate to all MFEs
  * via the event bus so even Module Federation remotes react instantly.
  */
-export const useFeatureFlagStore = create<FeatureFlagState & FeatureFlagActions>()(
-  (set, get) => ({
-    flags: new Map(),
-    isLoaded: false,
+export const useFeatureFlagStore = create<FeatureFlagState & FeatureFlagActions>()((set, get) => ({
+  flags: new Map(),
+  isLoaded: false,
 
-    setFlags: (flags) => {
-      const map = new Map(flags.map((f) => [f.name, f]));
-      set({ flags: map, isLoaded: true });
-    },
+  setFlags: (flags) => {
+    const map = new Map(flags.map((f) => [f.name, f]));
+    set({ flags: map, isLoaded: true });
+  },
 
-    setFlag: (name, enabled, variant) => {
-      const flags = new Map(get().flags);
-      flags.set(name, { name, enabled, variant });
-      set({ flags });
-      EventBus.publish('feature:flag-updated', { name, enabled });
-    },
+  setFlag: (name, enabled, variant) => {
+    const flags = new Map(get().flags);
+    flags.set(name, { name, enabled, variant });
+    set({ flags });
+    EventBus.publish('feature:flag-updated', { name, enabled });
+  },
 
-    isEnabled: (name) => {
-      return get().flags.get(name)?.enabled ?? false;
-    },
+  isEnabled: (name) => {
+    return get().flags.get(name)?.enabled ?? false;
+  },
 
-    getVariant: (name) => {
-      return get().flags.get(name)?.variant;
-    },
-  }),
-);
+  getVariant: (name) => {
+    return get().flags.get(name)?.variant;
+  },
+}));

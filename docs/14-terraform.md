@@ -137,16 +137,16 @@ terraform destroy
 
 ## Communication with Other Technologies
 
-| Technology     | How Terraform Interacts                                       |
-| -------------- | ------------------------------------------------------------- |
-| Docker         | ECR repos store Docker images built by CI                     |
-| GitHub Actions | CI pushes to ECR repos provisioned by Terraform               |
+| Technology     | How Terraform Interacts                                        |
+| -------------- | -------------------------------------------------------------- |
+| Docker         | ECR repos store Docker images built by CI                      |
+| GitHub Actions | CI pushes to ECR repos provisioned by Terraform                |
 | Kubernetes     | K8s deployments reference ECR image URLs from Terraform output |
-| CloudFront     | CDN serves S3 static assets with HTTPS enforcement            |
-| S3             | State backend for Terraform itself + static asset storage     |
+| CloudFront     | CDN serves S3 static assets with HTTPS enforcement             |
+| S3             | State backend for Terraform itself + static asset storage      |
 
 ## Key Files
 
-| File                       | Purpose                              |
-| -------------------------- | ------------------------------------ |
-| `infra/terraform/main.tf`  | All infrastructure definitions       |
+| File                      | Purpose                        |
+| ------------------------- | ------------------------------ |
+| `infra/terraform/main.tf` | All infrastructure definitions |

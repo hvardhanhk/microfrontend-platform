@@ -26,7 +26,10 @@ export function Pagination({ currentPage, totalPages, onPageChange, className }:
   const pages = getPages(currentPage, totalPages);
 
   return (
-    <nav aria-label="Pagination" className={cn('flex items-center justify-center gap-1', className)}>
+    <nav
+      aria-label="Pagination"
+      className={cn('flex items-center justify-center gap-1', className)}
+    >
       <button
         onClick={() => onPageChange(currentPage - 1)}
         disabled={currentPage <= 1}
@@ -37,7 +40,9 @@ export function Pagination({ currentPage, totalPages, onPageChange, className }:
       </button>
       {pages.map((page, i) =>
         page === '...' ? (
-          <span key={`ellipsis-${i}`} className="px-2 text-gray-400">...</span>
+          <span key={`ellipsis-${i}`} className="px-2 text-gray-400">
+            ...
+          </span>
         ) : (
           <button
             key={page}

@@ -24,12 +24,12 @@ Production-grade microfrontend platform built with Next.js App Router, Turborepo
 
 ### Why App Router Composition over Module Federation
 
-| Aspect | Module Federation | App Router Composition |
-|--------|------------------|----------------------|
-| SSR/SSG | Complex, limited | Native Next.js support |
-| Bundle optimization | Manual shared deps | Automatic tree-shaking |
-| Type safety | Runtime-only | Compile-time via monorepo |
-| DX | Webpack config heavy | Standard Next.js |
+| Aspect              | Module Federation    | App Router Composition    |
+| ------------------- | -------------------- | ------------------------- |
+| SSR/SSG             | Complex, limited     | Native Next.js support    |
+| Bundle optimization | Manual shared deps   | Automatic tree-shaking    |
+| Type safety         | Runtime-only         | Compile-time via monorepo |
+| DX                  | Webpack config heavy | Standard Next.js          |
 
 We chose App Router composition because it provides SSR-first rendering, compile-time type safety, and simpler DX. The tradeoff is that MFEs share a deployment artifact in the host shell. For teams needing runtime independence, Module Federation can be added via `@module-federation/nextjs-mf`.
 
@@ -70,13 +70,13 @@ npm run dev        # Start all apps
 npm run storybook  # Launch Storybook
 ```
 
-| App | URL |
-|-----|-----|
-| Host Shell | http://localhost:3000 |
+| App          | URL                   |
+| ------------ | --------------------- |
+| Host Shell   | http://localhost:3000 |
 | Products MFE | http://localhost:3001 |
-| Cart MFE | http://localhost:3002 |
-| User MFE | http://localhost:3003 |
-| Storybook | http://localhost:6006 |
+| Cart MFE     | http://localhost:3002 |
+| User MFE     | http://localhost:3003 |
+| Storybook    | http://localhost:6006 |
 
 ## Tech Stack
 

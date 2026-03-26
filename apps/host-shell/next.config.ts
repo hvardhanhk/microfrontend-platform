@@ -10,9 +10,10 @@ import type { NextConfig } from 'next';
  * Bundle analysis:
  *   ANALYZE=true npm run build --filter=@platform/host-shell
  */
-const withBundleAnalyzer = process.env.ANALYZE === 'true'
-  ? require('@next/bundle-analyzer')({ enabled: true })
-  : (config: NextConfig) => config;
+const withBundleAnalyzer =
+  process.env.ANALYZE === 'true'
+    ? (await import('@next/bundle-analyzer')).default({ enabled: true })
+    : (config: NextConfig) => config;
 
 const nextConfig: NextConfig = {
   transpilePackages: [

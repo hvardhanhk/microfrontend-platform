@@ -22,24 +22,24 @@ Server components are rendered on the server and send zero JavaScript to the cli
 
 ### Hooks Used
 
-| Hook             | Where Used                         | Purpose                              |
-| ---------------- | ---------------------------------- | ------------------------------------ |
-| `useState`       | MFE components, App Shell          | Local UI state (search, sort, etc.)  |
-| `useEffect`      | Providers, App Shell               | Side effects (auth check, init)      |
-| `useCallback`    | Products MFE                       | Stable function references           |
-| `useMemo`        | Products MFE, ABTest               | Expensive computations (filtering)   |
-| `useRef`         | useEventBus hook                   | Stable handler ref (no re-subscribe) |
-| `useContext`      | useTheme, useAuth, useToast        | Consuming provider values            |
-| `forwardRef`     | All 20 UI components               | Expose DOM refs to consumers         |
+| Hook          | Where Used                  | Purpose                              |
+| ------------- | --------------------------- | ------------------------------------ |
+| `useState`    | MFE components, App Shell   | Local UI state (search, sort, etc.)  |
+| `useEffect`   | Providers, App Shell        | Side effects (auth check, init)      |
+| `useCallback` | Products MFE                | Stable function references           |
+| `useMemo`     | Products MFE, ABTest        | Expensive computations (filtering)   |
+| `useRef`      | useEventBus hook            | Stable handler ref (no re-subscribe) |
+| `useContext`  | useTheme, useAuth, useToast | Consuming provider values            |
+| `forwardRef`  | All 20 UI components        | Expose DOM refs to consumers         |
 
 ### Context Providers
 
-| Provider        | Package            | Provides                               |
-| --------------- | ------------------ | -------------------------------------- |
-| `ThemeProvider`  | `@platform/ui`    | theme, resolvedTheme, setTheme         |
-| `ToastProvider`  | `@platform/ui`    | showToast function                     |
-| `AuthProvider`   | `@platform/auth`  | user, isAuthenticated, login, logout   |
-| `QueryProvider`  | `@platform/api-client` | TanStack Query client              |
+| Provider        | Package                | Provides                             |
+| --------------- | ---------------------- | ------------------------------------ |
+| `ThemeProvider` | `@platform/ui`         | theme, resolvedTheme, setTheme       |
+| `ToastProvider` | `@platform/ui`         | showToast function                   |
+| `AuthProvider`  | `@platform/auth`       | user, isAuthenticated, login, logout |
+| `QueryProvider` | `@platform/api-client` | TanStack Query client                |
 
 ### Provider Tree Composition
 
@@ -58,7 +58,7 @@ Server components are rendered on the server and send zero JavaScript to the cli
 ### Dynamic Imports (Code Splitting)
 
 ```tsx
-const ProductsMfe = dynamic(() => import("@/components/mfe/products-mfe"), {
+const ProductsMfe = dynamic(() => import('@/components/mfe/products-mfe'), {
   loading: () => <Spinner />,
 });
 ```
@@ -69,40 +69,38 @@ Each MFE is lazily loaded — the browser only downloads the JavaScript for the 
 
 ```tsx
 // Three-state auth rendering (null = loading, true = logged in, false = logged out)
-{isLoggedIn === null ? (
-  <Placeholder />
-) : isLoggedIn ? (
-  <Avatar />
-) : (
-  <SignInButton />
-)}
+{
+  isLoggedIn === null ? <Placeholder /> : isLoggedIn ? <Avatar /> : <SignInButton />;
+}
 
 // Cart quantity stepper vs Add to Cart button
-{cartItem ? (
-  <QuantityStepper value={cartItem.quantity} />
-) : (
-  <Button onClick={addToCart}>Add to Cart</Button>
-)}
+{
+  cartItem ? (
+    <QuantityStepper value={cartItem.quantity} />
+  ) : (
+    <Button onClick={addToCart}>Add to Cart</Button>
+  );
+}
 ```
 
 ## Communication with Other Technologies
 
-| Technology       | How React Interacts                                            |
-| ---------------- | -------------------------------------------------------------- |
-| Next.js          | App Router renders server/client components                    |
-| TypeScript       | All components and hooks are fully typed                       |
-| Zustand          | Stores consumed via `useCartStore((s) => s.cart)` selectors    |
-| Event Bus        | `useEventBus` hook integrates with `useEffect` lifecycle       |
-| Tailwind CSS     | JSX className props with utility classes                       |
-| TanStack Query   | React hooks (`useQuery`, `useMutation`) for data fetching      |
-| Storybook        | Stories render components in isolation for documentation       |
+| Technology     | How React Interacts                                         |
+| -------------- | ----------------------------------------------------------- |
+| Next.js        | App Router renders server/client components                 |
+| TypeScript     | All components and hooks are fully typed                    |
+| Zustand        | Stores consumed via `useCartStore((s) => s.cart)` selectors |
+| Event Bus      | `useEventBus` hook integrates with `useEffect` lifecycle    |
+| Tailwind CSS   | JSX className props with utility classes                    |
+| TanStack Query | React hooks (`useQuery`, `useMutation`) for data fetching   |
+| Storybook      | Stories render components in isolation for documentation    |
 
 ## Key Files
 
-| File                                         | Purpose                         |
-| -------------------------------------------- | ------------------------------- |
-| `apps/host-shell/src/components/providers.tsx` | Provider tree composition     |
-| `apps/host-shell/src/components/app-shell.tsx` | Root layout component         |
-| `apps/host-shell/src/components/mfe/*.tsx`     | MFE client components         |
-| `packages/ui/src/components/*/`                | 20 shared UI components       |
-| `packages/ui/src/themes/theme-provider.tsx`    | Theme context provider        |
+| File                                           | Purpose                   |
+| ---------------------------------------------- | ------------------------- |
+| `apps/host-shell/src/components/providers.tsx` | Provider tree composition |
+| `apps/host-shell/src/components/app-shell.tsx` | Root layout component     |
+| `apps/host-shell/src/components/mfe/*.tsx`     | MFE client components     |
+| `packages/ui/src/components/*/`                | 20 shared UI components   |
+| `packages/ui/src/themes/theme-provider.tsx`    | Theme context provider    |

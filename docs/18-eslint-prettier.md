@@ -11,42 +11,32 @@
 ```javascript
 module.exports = {
   extends: [
-    "next/core-web-vitals", // Next.js recommended + a11y rules
-    "next/typescript", // TypeScript-specific Next.js rules
-    "plugin:@typescript-eslint/recommended",
-    "prettier", // Disable rules that conflict with Prettier
+    'next/core-web-vitals', // Next.js recommended + a11y rules
+    'next/typescript', // TypeScript-specific Next.js rules
+    'plugin:@typescript-eslint/recommended',
+    'prettier', // Disable rules that conflict with Prettier
   ],
-  plugins: ["@typescript-eslint"],
+  plugins: ['@typescript-eslint'],
   rules: {
     // Force `import type {}` for tree-shakeable type imports
-    "@typescript-eslint/consistent-type-imports": "error",
+    '@typescript-eslint/consistent-type-imports': 'error',
 
     // Allow unused args prefixed with _
-    "@typescript-eslint/no-unused-vars": [
-      "error",
-      { argsIgnorePattern: "^_" },
-    ],
+    '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
 
     // Warn (not error) on `any` usage
-    "@typescript-eslint/no-explicit-any": "warn",
+    '@typescript-eslint/no-explicit-any': 'warn',
 
     // No React display-name requirement (using named exports)
-    "react/display-name": "off",
+    'react/display-name': 'off',
 
     // Enforce consistent import ordering
-    "import/order": [
-      "error",
+    'import/order': [
+      'error',
       {
-        groups: [
-          "builtin",
-          "external",
-          "internal",
-          "parent",
-          "sibling",
-          "index",
-        ],
-        "newlines-between": "always",
-        alphabetize: { order: "asc" },
+        groups: ['builtin', 'external', 'internal', 'parent', 'sibling', 'index'],
+        'newlines-between': 'always',
+        alphabetize: { order: 'asc' },
       },
     ],
   },
@@ -55,13 +45,13 @@ module.exports = {
 
 ### Rule Rationale
 
-| Rule                        | Setting | Why                                             |
-| --------------------------- | ------- | ----------------------------------------------- |
-| `consistent-type-imports`   | error   | Bundlers can tree-shake `import type {}` away   |
-| `no-unused-vars`            | error   | Dead code detection (ignoring `_`-prefixed args)|
-| `no-explicit-any`           | warn    | Encourages proper typing without blocking dev   |
-| `import/order`              | error   | Deterministic imports reduce merge conflicts     |
-| `next/core-web-vitals`      | extends | Accessibility + performance rules from Next.js   |
+| Rule                      | Setting | Why                                              |
+| ------------------------- | ------- | ------------------------------------------------ |
+| `consistent-type-imports` | error   | Bundlers can tree-shake `import type {}` away    |
+| `no-unused-vars`          | error   | Dead code detection (ignoring `_`-prefixed args) |
+| `no-explicit-any`         | warn    | Encourages proper typing without blocking dev    |
+| `import/order`            | error   | Deterministic imports reduce merge conflicts     |
+| `next/core-web-vitals`    | extends | Accessibility + performance rules from Next.js   |
 
 ## Prettier Configuration
 
@@ -122,15 +112,15 @@ chore(deps): update tailwindcss to 3.4
 docs(readme): add architecture diagram
 ```
 
-| Type       | Purpose                        |
-| ---------- | ------------------------------ |
-| `feat`     | New feature                    |
-| `fix`      | Bug fix                        |
-| `chore`    | Maintenance / deps             |
-| `docs`     | Documentation                  |
-| `refactor` | Code change (no behavior)      |
-| `test`     | Test additions                 |
-| `ci`       | CI/CD changes                  |
+| Type       | Purpose                   |
+| ---------- | ------------------------- |
+| `feat`     | New feature               |
+| `fix`      | Bug fix                   |
+| `chore`    | Maintenance / deps        |
+| `docs`     | Documentation             |
+| `refactor` | Code change (no behavior) |
+| `test`     | Test additions            |
+| `ci`       | CI/CD changes             |
 
 ## Communication with Other Technologies
 
@@ -145,10 +135,10 @@ docs(readme): add architecture diagram
 
 ## Key Files
 
-| File                             | Purpose                          |
-| -------------------------------- | -------------------------------- |
-| `packages/config/eslint/next.js` | Shared ESLint configuration      |
-| `.prettierrc`                    | Prettier settings                |
-| `.prettierignore`                | Prettier exclusions              |
-| `commitlint.config.js`          | Commit message rules             |
-| `package.json` (lint-staged)    | Pre-commit hook config           |
+| File                             | Purpose                     |
+| -------------------------------- | --------------------------- |
+| `packages/config/eslint/next.js` | Shared ESLint configuration |
+| `.prettierrc`                    | Prettier settings           |
+| `.prettierignore`                | Prettier exclusions         |
+| `commitlint.config.js`           | Commit message rules        |
+| `package.json` (lint-staged)     | Pre-commit hook config      |
