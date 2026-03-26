@@ -10,7 +10,8 @@
       "Bash(npx eslint:*)",
       "Bash(npm install:*)",
       "Bash(npx next:*)",
-      "Bash(npx lint-staged:*)"
+      "Bash(npx lint-staged:*)",
+      "Bash(grep -v \"deprecated\\\\|create-next-app\\\\|codemod\\\\|^$\")"
     ]
   }
 }

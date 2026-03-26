@@ -12,7 +12,8 @@ import type { NextConfig } from 'next';
  */
 const withBundleAnalyzer =
   process.env.ANALYZE === 'true'
-    ? (await import('@next/bundle-analyzer')).default({ enabled: true })
+    ? // eslint-disable-next-line @typescript-eslint/no-require-imports
+      require('@next/bundle-analyzer')({ enabled: true })
     : (config: NextConfig) => config;
 
 const nextConfig: NextConfig = {
