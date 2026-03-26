@@ -57,29 +57,30 @@ jobs:
         run: npx chromatic --project-token=${{ secrets.CHROMATIC_PROJECT_TOKEN }} --exit-zero-on-changes
         working-directory: packages/ui
 
-  docker:
-    name: Docker Build & Push
-    runs-on: ubuntu-latest
-    needs: lint-test-build
-    if: github.ref == 'refs/heads/main'
-    strategy:
-      matrix:
-        app: [host-shell, mfe-products, mfe-cart, mfe-user]
-    steps:
-      - uses: actions/checkout@v4
-      - uses: aws-actions/configure-aws-credentials@v4
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1
-      - uses: aws-actions/amazon-ecr-login@v2
-        id: ecr
-      - name: Build & push
-        run: |
-          docker build \
-            --build-arg APP_NAME=${{ matrix.app }} \
-            -f infra/docker/Dockerfile.app \
-            -t ${{ steps.ecr.outputs.registry }}/platform/${{ matrix.app }}:${{ github.sha }} \
-            -t ${{ steps.ecr.outputs.registry }}/platform/${{ matrix.app }}:latest \
-            .
-          docker push ${{ steps.ecr.outputs.registry }}/platform/${{ matrix.app }} --all-tags
+  # TODO: enable once AWS credentials and ECR are configured
+  # docker:
+  #   name: Docker Build & Push
+  #   runs-on: ubuntu-latest
+  #   needs: lint-test-build
+  #   if: github.ref == 'refs/heads/main'
+  #   strategy:
+  #     matrix:
+  #       app: [host-shell, mfe-products, mfe-cart, mfe-user]
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - uses: aws-actions/configure-aws-credentials@v4
+  #       with:
+  #         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  #         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  #         aws-region: us-east-1
+  #     - uses: aws-actions/amazon-ecr-login@v2
+  #       id: ecr
+  #     - name: Build & push
+  #       run: |
+  #         docker build \
+  #           --build-arg APP_NAME=${{ matrix.app }} \
+  #           -f infra/docker/Dockerfile.app \
+  #           -t ${{ steps.ecr.outputs.registry }}/platform/${{ matrix.app }}:${{ github.sha }} \
+  #           -t ${{ steps.ecr.outputs.registry }}/platform/${{ matrix.app }}:latest \
+  #           .
+  #         docker push ${{ steps.ecr.outputs.registry }}/platform/${{ matrix.app }} --all-tags
