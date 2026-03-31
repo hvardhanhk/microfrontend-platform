@@ -34,7 +34,7 @@ export default function UserMfe() {
       <Card className="flex flex-col items-center p-8 sm:flex-row sm:items-start sm:gap-6">
         <Avatar name="Alex Johnson" size="lg" />
         <div className="mt-4 text-center sm:mt-0 sm:text-left">
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Alex Johnson</h1>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Alex</h1>
           <p className="text-gray-500">demo@platform.io</p>
           <div className="mt-2 flex gap-2 justify-center sm:justify-start">
             <Badge variant="info">customer</Badge>
