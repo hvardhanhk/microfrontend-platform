@@ -10,41 +10,46 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
-# ─────────────────────────────────────────────────────────────────────────────
-# Shared packages (packages/*) affect every app, so changes there still
-# trigger all jobs.  Changes scoped to a single app (apps/mfe-user/**) only
-# trigger that app's job.
-# ─────────────────────────────────────────────────────────────────────────────
-
 jobs:
-  # ── Shared packages: any change here rebuilds everything ──────────────────
-  shared:
-    name: Shared Packages — Lint & Test
+  # ── Step 1: detect which paths actually changed ───────────────────────────
+  # dorny/paths-filter diffs the commit range and sets boolean outputs.
+  # Every downstream job reads these outputs to decide whether to run.
+  changes:
+    name: Detect changed paths
     runs-on: ubuntu-latest
-    if: |
-      github.event_name == 'push' ||
-      contains(toJSON(github.event.pull_request.changed_files), 'packages/')
+    outputs:
+      shared:       ${{ steps.filter.outputs.shared }}
+      host-shell:   ${{ steps.filter.outputs.host-shell }}
+      mfe-products: ${{ steps.filter.outputs.mfe-products }}
+      mfe-cart:     ${{ steps.filter.outputs.mfe-cart }}
+      mfe-user:     ${{ steps.filter.outputs.mfe-user }}
+      ui:           ${{ steps.filter.outputs.ui }}
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: dorny/paths-filter@v3
+        id: filter
         with:
-          node-version: 22
-          cache: npm
-      - run: npm ci
-      - run: npx turbo lint --filter=./packages/*
-      - run: npm run format:check
-      - run: npx turbo test --filter=./packages/*
-      - run: npx turbo build --filter=./packages/*
+          filters: |
+            shared:
+              - 'packages/**'
+            host-shell:
+              - 'apps/host-shell/**'
+            mfe-products:
+              - 'apps/mfe-products/**'
+            mfe-cart:
+              - 'apps/mfe-cart/**'
+            mfe-user:
+              - 'apps/mfe-user/**'
+            ui:
+              - 'packages/ui/**'
 
-  # ── Per-app jobs ───────────────────────────────────────────────────────────
+  # ── Per-app jobs — each only runs when its own files OR shared packages changed ──
+
   host-shell:
     name: host-shell
+    needs: changes
+    if: needs.changes.outputs.host-shell == 'true' || needs.changes.outputs.shared == 'true'
     runs-on: ubuntu-latest
-    # Run when host-shell files change, shared packages change, or on main push
-    if: |
-      github.ref == 'refs/heads/main' ||
-      contains(toJSON(github.event.pull_request.changed_files), 'apps/host-shell/') ||
-      contains(toJSON(github.event.pull_request.changed_files), 'packages/')
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -58,11 +63,9 @@ jobs:
 
   mfe-products:
     name: mfe-products
+    needs: changes
+    if: needs.changes.outputs.mfe-products == 'true' || needs.changes.outputs.shared == 'true'
     runs-on: ubuntu-latest
-    if: |
-      github.ref == 'refs/heads/main' ||
-      contains(toJSON(github.event.pull_request.changed_files), 'apps/mfe-products/') ||
-      contains(toJSON(github.event.pull_request.changed_files), 'packages/')
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -76,11 +79,9 @@ jobs:
 
   mfe-cart:
     name: mfe-cart
+    needs: changes
+    if: needs.changes.outputs.mfe-cart == 'true' || needs.changes.outputs.shared == 'true'
     runs-on: ubuntu-latest
-    if: |
-      github.ref == 'refs/heads/main' ||
-      contains(toJSON(github.event.pull_request.changed_files), 'apps/mfe-cart/') ||
-      contains(toJSON(github.event.pull_request.changed_files), 'packages/')
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -94,11 +95,9 @@ jobs:
 
   mfe-user:
     name: mfe-user
+    needs: changes
+    if: needs.changes.outputs.mfe-user == 'true' || needs.changes.outputs.shared == 'true'
     runs-on: ubuntu-latest
-    if: |
-      github.ref == 'refs/heads/main' ||
-      contains(toJSON(github.event.pull_request.changed_files), 'apps/mfe-user/') ||
-      contains(toJSON(github.event.pull_request.changed_files), 'packages/')
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -110,13 +109,12 @@ jobs:
       - run: npx turbo test --filter=@platform/mfe-user
       - run: npx turbo build --filter=@platform/mfe-user
 
-  # ── Storybook / Chromatic — only on PRs touching the UI package ───────────
+  # ── Storybook / Chromatic — only when the UI package changed ─────────────
   storybook:
     name: Storybook & Chromatic
+    needs: changes
+    if: needs.changes.outputs.ui == 'true' && github.event_name == 'pull_request'
     runs-on: ubuntu-latest
-    if: |
-      github.event_name == 'pull_request' &&
-      contains(toJSON(github.event.pull_request.changed_files), 'packages/ui/')
     steps:
       - uses: actions/checkout@v4
         with:
@@ -135,9 +133,9 @@ jobs:
   # TODO: enable once AWS credentials and ECR are configured
   # docker:
   #   name: Docker Build & Push
-  #   runs-on: ubuntu-latest
   #   needs: [host-shell, mfe-products, mfe-cart, mfe-user]
   #   if: github.ref == 'refs/heads/main'
+  #   runs-on: ubuntu-latest
   #   strategy:
   #     matrix:
   #       app: [host-shell, mfe-products, mfe-cart, mfe-user]
