@@ -38,7 +38,7 @@ export function UserDashboard() {
       user: {
         id: 'user_1',
         email: 'demo@platform.io',
-        name: 'Alex Johnson',
+        name: 'Alex John',
         role: 'customer',
         preferences: { theme: 'system', language: 'en', currency: 'USD', notifications: true },
         createdAt: new Date().toISOString(),

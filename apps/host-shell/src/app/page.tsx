@@ -931,21 +931,328 @@ export default function HomePage() {
         <p className="mb-6 text-gray-500 dark:text-gray-400">
           Planned improvements and features for the next iteration of the platform.
         </p>
-        <div className="grid gap-6 md:grid-cols-2">
-          <Card className="border-t-4 border-t-purple-500">
-            <CardHeader>
-              <h3 className="text-lg font-semibold">Runtime Composition</h3>
-            </CardHeader>
-            <CardBody>
-              <p className="text-sm text-gray-600 dark:text-gray-400">
-                Migrate from App Router composition to <strong>Module Federation</strong> (via
-                @module-federation/nextjs-mf) for true runtime independence — deploy each MFE
-                separately without rebuilding the host shell. Enables independent release cycles and
-                team autonomy.
-              </p>
-            </CardBody>
-          </Card>
 
+        {/* MFE approach comparison — full-width before the 2-col grid */}
+        <Card className="mb-6 border-t-4 border-t-purple-500">
+          <CardHeader>
+            <h3 className="text-lg font-semibold">Runtime Composition — Approach Comparison</h3>
+            <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+              This platform currently uses <strong>Build-time App Router composition</strong> — all
+              MFEs are co-located in the monorepo and bundled together at build time. Below is an
+              honest comparison of every mainstream approach so the right upgrade path can be chosen
+              deliberately.
+            </p>
+          </CardHeader>
+          <CardBody className="space-y-6">
+            {/* Approach 1 — current */}
+            <div className="rounded-lg border border-gray-200 p-4 dark:border-gray-700">
+              <div className="mb-2 flex items-center gap-2">
+                <span className="rounded-full bg-blue-100 px-2 py-0.5 text-xs font-semibold text-blue-700 dark:bg-blue-900/40 dark:text-blue-300">
+                  Current
+                </span>
+                <h4 className="font-semibold text-gray-900 dark:text-white">
+                  Build-time Monorepo Composition (Next.js App Router + Turborepo)
+                </h4>
+              </div>
+              <p className="mb-3 text-sm text-gray-600 dark:text-gray-400">
+                All MFE components live in{' '}
+                <code className="rounded bg-gray-100 px-1 text-xs dark:bg-gray-800">
+                  apps/host-shell/src/components/mfe/
+                </code>{' '}
+                and are imported via{' '}
+                <code className="rounded bg-gray-100 px-1 text-xs dark:bg-gray-800">
+                  next/dynamic
+                </code>
+                . Shared packages (
+                <code className="rounded bg-gray-100 px-1 text-xs dark:bg-gray-800">
+                  @platform/*
+                </code>
+                ) are workspace dependencies consumed at build time. Each MFE app can also run
+                standalone on its own port for isolated development.
+              </p>
+              <div className="grid gap-3 text-sm sm:grid-cols-2">
+                <div>
+                  <p className="mb-1 font-medium text-green-700 dark:text-green-400">Strengths</p>
+                  <ul className="space-y-1 text-gray-600 dark:text-gray-400">
+                    <li className="flex gap-2">
+                      <span className="text-green-500">✓</span>Full App Router, SSR, ISR, RSC
+                      support — no framework restrictions
+                    </li>
+                    <li className="flex gap-2">
+                      <span className="text-green-500">✓</span>Single unified build — TypeScript
+                      errors caught across all MFEs at once
+                    </li>
+                    <li className="flex gap-2">
+                      <span className="text-green-500">✓</span>Zero runtime negotiation overhead —
+                      no shared-singleton version conflicts
+                    </li>
+                    <li className="flex gap-2">
+                      <span className="text-green-500">✓</span>Simple mental model — standard
+                      Next.js, no extra tooling to learn
+                    </li>
+                    <li className="flex gap-2">
+                      <span className="text-green-500">✓</span>Turborepo remote caching means only
+                      changed MFEs rebuild
+                    </li>
+                  </ul>
+                </div>
+                <div>
+                  <p className="mb-1 font-medium text-red-600 dark:text-red-400">Trade-offs</p>
+                  <ul className="space-y-1 text-gray-600 dark:text-gray-400">
+                    <li className="flex gap-2">
+                      <span className="text-red-400">✗</span>Deploying any MFE requires rebuilding
+                      and redeploying the whole host
+                    </li>
+                    <li className="flex gap-2">
+                      <span className="text-red-400">✗</span>Teams share a release pipeline — one
+                      broken test blocks everyone
+                    </li>
+                    <li className="flex gap-2">
+                      <span className="text-red-400">✗</span>Blast radius of a bad deploy is the
+                      entire application
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              <p className="mt-3 text-sm text-gray-500 dark:text-gray-400">
+                <strong>Best for:</strong> Small-to-medium teams that ship together frequently and
+                value simplicity over deployment independence.
+              </p>
+            </div>
+
+            {/* Approach 2 — Module Federation */}
+            <div className="rounded-lg border border-gray-200 p-4 dark:border-gray-700">
+              <div className="mb-2 flex items-center gap-2">
+                <span className="rounded-full bg-yellow-100 px-2 py-0.5 text-xs font-semibold text-yellow-700 dark:bg-yellow-900/40 dark:text-yellow-300">
+                  Evaluated — Not Adopted
+                </span>
+                <h4 className="font-semibold text-gray-900 dark:text-white">
+                  Module Federation 2.0 (
+                  <code className="text-sm font-normal">@module-federation/enhanced</code>)
+                </h4>
+              </div>
+              <p className="mb-3 text-sm text-gray-600 dark:text-gray-400">
+                Each MFE builds its own{' '}
+                <code className="rounded bg-gray-100 px-1 text-xs dark:bg-gray-800">
+                  remoteEntry.js
+                </code>{' '}
+                and exposes components over HTTP. The host fetches and mounts them at runtime
+                without a rebuild. Unlike the legacy{' '}
+                <code className="rounded bg-gray-100 px-1 text-xs dark:bg-gray-800">
+                  @module-federation/nextjs-mf
+                </code>
+                , MF 2.0 does not block App Router — but it requires{' '}
+                <code className="rounded bg-gray-100 px-1 text-xs dark:bg-gray-800">
+                  NEXT_PRIVATE_LOCAL_WEBPACK=true
+                </code>{' '}
+                and a local webpack install, and the App Router integration is still maturing
+                (sparse docs, limited community examples for RSC + streaming).
+              </p>
+              <div className="grid gap-3 text-sm sm:grid-cols-2">
+                <div>
+                  <p className="mb-1 font-medium text-green-700 dark:text-green-400">Strengths</p>
+                  <ul className="space-y-1 text-gray-600 dark:text-gray-400">
+                    <li className="flex gap-2">
+                      <span className="text-green-500">✓</span>True runtime independence — deploy
+                      one MFE without touching the host
+                    </li>
+                    <li className="flex gap-2">
+                      <span className="text-green-500">✓</span>Shared singletons (React, Zustand,
+                      EventBus) via webpack negotiate at runtime
+                    </li>
+                    <li className="flex gap-2">
+                      <span className="text-green-500">✓</span>Teams own their own CI/CD pipelines
+                      end to end
+                    </li>
+                  </ul>
+                </div>
+                <div>
+                  <p className="mb-1 font-medium text-red-600 dark:text-red-400">Trade-offs</p>
+                  <ul className="space-y-1 text-gray-600 dark:text-gray-400">
+                    <li className="flex gap-2">
+                      <span className="text-red-400">✗</span>App Router + RSC + streaming support is
+                      still immature in MF 2.0
+                    </li>
+                    <li className="flex gap-2">
+                      <span className="text-red-400">✗</span>Shared singleton version mismatches
+                      cause hard-to-debug runtime errors
+                    </li>
+                    <li className="flex gap-2">
+                      <span className="text-red-400">✗</span>Adds significant build/infra complexity
+                      for relatively small teams
+                    </li>
+                    <li className="flex gap-2">
+                      <span className="text-red-400">✗</span>Forces CJS config files, breaking
+                      TS-first Next.js conventions
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              <p className="mt-3 text-sm text-gray-500 dark:text-gray-400">
+                <strong>Best for:</strong> Large orgs (10+ teams) where deployment independence
+                justifies the operational overhead. Re-evaluate when MF 2.0&apos;s App Router
+                integration stabilises.
+              </p>
+            </div>
+
+            {/* Approach 3 — iframes */}
+            <div className="rounded-lg border border-gray-200 p-4 dark:border-gray-700">
+              <div className="mb-2 flex items-center gap-2">
+                <span className="rounded-full bg-gray-100 px-2 py-0.5 text-xs font-semibold text-gray-600 dark:bg-gray-700 dark:text-gray-300">
+                  Alternative
+                </span>
+                <h4 className="font-semibold text-gray-900 dark:text-white">iframe Composition</h4>
+              </div>
+              <p className="mb-3 text-sm text-gray-600 dark:text-gray-400">
+                Each MFE runs as a completely separate app embedded via{' '}
+                <code className="rounded bg-gray-100 px-1 text-xs dark:bg-gray-800">
+                  &lt;iframe&gt;
+                </code>
+                . The host and remotes communicate only through{' '}
+                <code className="rounded bg-gray-100 px-1 text-xs dark:bg-gray-800">
+                  postMessage
+                </code>
+                .
+              </p>
+              <div className="grid gap-3 text-sm sm:grid-cols-2">
+                <div>
+                  <p className="mb-1 font-medium text-green-700 dark:text-green-400">Strengths</p>
+                  <ul className="space-y-1 text-gray-600 dark:text-gray-400">
+                    <li className="flex gap-2">
+                      <span className="text-green-500">✓</span>Strongest isolation — different
+                      frameworks, React versions, CSS all coexist
+                    </li>
+                    <li className="flex gap-2">
+                      <span className="text-green-500">✓</span>No shared dependency conflicts
+                      whatsoever
+                    </li>
+                    <li className="flex gap-2">
+                      <span className="text-green-500">✓</span>Security boundary between MFEs
+                    </li>
+                  </ul>
+                </div>
+                <div>
+                  <p className="mb-1 font-medium text-red-600 dark:text-red-400">Trade-offs</p>
+                  <ul className="space-y-1 text-gray-600 dark:text-gray-400">
+                    <li className="flex gap-2">
+                      <span className="text-red-400">✗</span>Poor UX — scroll, focus, and keyboard
+                      navigation break across iframe boundaries
+                    </li>
+                    <li className="flex gap-2">
+                      <span className="text-red-400">✗</span>SEO-hostile — iframe content is not
+                      indexed
+                    </li>
+                    <li className="flex gap-2">
+                      <span className="text-red-400">✗</span>Slow initial load — full separate
+                      document parse per MFE
+                    </li>
+                    <li className="flex gap-2">
+                      <span className="text-red-400">✗</span>postMessage API is fragile and hard to
+                      type-safe
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              <p className="mt-3 text-sm text-gray-500 dark:text-gray-400">
+                <strong>Best for:</strong> Third-party widget embeds or highly sensitive contexts
+                requiring hard security isolation. Not appropriate as the primary composition model.
+              </p>
+            </div>
+
+            {/* Approach 4 — Reverse proxy / multi-zone */}
+            <div className="rounded-lg border border-gray-200 p-4 dark:border-gray-700">
+              <div className="mb-2 flex items-center gap-2">
+                <span className="rounded-full bg-gray-100 px-2 py-0.5 text-xs font-semibold text-gray-600 dark:bg-gray-700 dark:text-gray-300">
+                  Alternative
+                </span>
+                <h4 className="font-semibold text-gray-900 dark:text-white">
+                  Reverse Proxy / Next.js Multi-Zone
+                </h4>
+              </div>
+              <p className="mb-3 text-sm text-gray-600 dark:text-gray-400">
+                Each MFE is deployed as an independent Next.js app. A reverse proxy (Nginx,
+                Cloudflare, or Next.js rewrites) routes URL prefixes to the right app —{' '}
+                <code className="rounded bg-gray-100 px-1 text-xs dark:bg-gray-800">
+                  /products/*
+                </code>{' '}
+                hits the Products app,{' '}
+                <code className="rounded bg-gray-100 px-1 text-xs dark:bg-gray-800">/cart/*</code>{' '}
+                hits Cart. No JavaScript sharing between apps.
+              </p>
+              <div className="grid gap-3 text-sm sm:grid-cols-2">
+                <div>
+                  <p className="mb-1 font-medium text-green-700 dark:text-green-400">Strengths</p>
+                  <ul className="space-y-1 text-gray-600 dark:text-gray-400">
+                    <li className="flex gap-2">
+                      <span className="text-green-500">✓</span>True deployment independence with
+                      zero build coupling
+                    </li>
+                    <li className="flex gap-2">
+                      <span className="text-green-500">✓</span>Each MFE uses full Next.js — App
+                      Router, SSR, ISR, RSC, no restrictions
+                    </li>
+                    <li className="flex gap-2">
+                      <span className="text-green-500">✓</span>Teams can use different Next.js
+                      versions or even different frameworks
+                    </li>
+                    <li className="flex gap-2">
+                      <span className="text-green-500">✓</span>Vercel natively supports this via
+                      multi-zone rewrites
+                    </li>
+                  </ul>
+                </div>
+                <div>
+                  <p className="mb-1 font-medium text-red-600 dark:text-red-400">Trade-offs</p>
+                  <ul className="space-y-1 text-gray-600 dark:text-gray-400">
+                    <li className="flex gap-2">
+                      <span className="text-red-400">✗</span>Full-page reload on cross-MFE
+                      navigation (no SPA feel between zones)
+                    </li>
+                    <li className="flex gap-2">
+                      <span className="text-red-400">✗</span>Shared state (cart, auth) must go
+                      through server-side mechanisms or cookies
+                    </li>
+                    <li className="flex gap-2">
+                      <span className="text-red-400">✗</span>Each app ships its own React bundle —
+                      larger total page weight
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              <p className="mt-3 text-sm text-gray-500 dark:text-gray-400">
+                <strong>Best for:</strong> Route-level independent teams where cross-MFE navigation
+                is infrequent and state sharing is light. The simplest path to true deployment
+                independence.
+              </p>
+            </div>
+
+            {/* Recommendation */}
+            <div className="rounded-lg border-2 border-purple-400 bg-purple-50 p-4 dark:border-purple-600 dark:bg-purple-950/30">
+              <p className="mb-2 text-sm font-semibold text-purple-800 dark:text-purple-300">
+                Recommended upgrade path for this platform
+              </p>
+              <p className="text-sm text-gray-700 dark:text-gray-300">
+                The current build-time composition is the right choice <em>right now</em> — it keeps
+                the full Next.js App Router feature set intact with zero extra tooling. When teams
+                grow to the point where shared release pipelines become a bottleneck, the best next
+                step is <strong>Next.js Multi-Zone</strong>: deploy each MFE app independently,
+                route via Vercel rewrites, and use the existing{' '}
+                <code className="rounded bg-gray-100 px-1 text-xs dark:bg-gray-800">
+                  @platform/event-bus
+                </code>{' '}
+                +{' '}
+                <code className="rounded bg-gray-100 px-1 text-xs dark:bg-gray-800">
+                  localStorage
+                </code>{' '}
+                for cross-zone state. This gives deployment independence with no framework
+                trade-offs. Module Federation becomes worth revisiting only once MF 2.0&apos;s App
+                Router + RSC story is production-proven.
+              </p>
+            </div>
+          </CardBody>
+        </Card>
+
+        <div className="grid gap-6 md:grid-cols-2">
           <Card className="border-t-4 border-t-pink-500">
             <CardHeader>
               <h3 className="text-lg font-semibold">Server Components & Streaming</h3>
