@@ -71,7 +71,7 @@ export function UserDashboard() {
       <Card className="flex flex-col sm:flex-row items-center gap-6 p-6">
         <Avatar name="Alex Johnson" size="lg" />
         <div>
-          <h1 className="text-2xl font-bold">Alex Johnson</h1>
+          <h1 className="text-2xl font-bold">Alex</h1>
           <p className="text-gray-500">demo@platform.io</p>
           <Badge variant="info" className="mt-1">
             customer
