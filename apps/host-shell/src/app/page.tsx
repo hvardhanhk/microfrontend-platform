@@ -2,6 +2,8 @@ import { Button, Card, CardBody, CardHeader, Badge } from '@platform/ui';
 import Link from 'next/link';
 
 import { ArchitectureModal } from '@/components/architecture-modal';
+import { MfeComparisonModal } from '@/components/mfe-comparison-modal';
+import { ModuleFederationModal } from '@/components/module-federation-modal';
 
 /**
  * Home page — static, SSG-friendly.
@@ -41,6 +43,8 @@ export default function HomePage() {
               </Button>
             </Link>
             <ArchitectureModal />
+            <MfeComparisonModal />
+            <ModuleFederationModal />
           </div>
           <div className="mt-8 flex flex-wrap gap-x-8 gap-y-2 text-sm text-brand-200">
             <span>Next.js 15 (App Router)</span>
@@ -937,10 +941,17 @@ export default function HomePage() {
           <CardHeader>
             <h3 className="text-lg font-semibold">Runtime Composition — Approach Comparison</h3>
             <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-              This platform currently uses <strong>Build-time App Router composition</strong> — all
-              MFEs are co-located in the monorepo and bundled together at build time. Below is an
-              honest comparison of every mainstream approach so the right upgrade path can be chosen
-              deliberately.
+              This platform has migrated to <strong>Next.js Multi-Zone</strong> — each MFE is a
+              separate Next.js app deployed independently. The host-shell routes traffic via Vercel
+              rewrites and{' '}
+              <code className="rounded bg-gray-100 px-1 text-xs dark:bg-gray-800">
+                localStorage
+              </code>{' '}
+              +{' '}
+              <code className="rounded bg-gray-100 px-1 text-xs dark:bg-gray-800">
+                @platform/event-bus
+              </code>{' '}
+              handle cross-zone state. Below is a full comparison of all mainstream approaches.
             </p>
           </CardHeader>
           <CardBody className="space-y-6">
@@ -948,7 +959,7 @@ export default function HomePage() {
             <div className="rounded-lg border border-gray-200 p-4 dark:border-gray-700">
               <div className="mb-2 flex items-center gap-2">
                 <span className="rounded-full bg-blue-100 px-2 py-0.5 text-xs font-semibold text-blue-700 dark:bg-blue-900/40 dark:text-blue-300">
-                  Current
+                  Initial
                 </span>
                 <h4 className="font-semibold text-gray-900 dark:text-white">
                   Build-time Monorepo Composition (Next.js App Router + Turborepo)
@@ -1159,45 +1170,81 @@ export default function HomePage() {
               </p>
             </div>
 
-            {/* Approach 4 — Reverse proxy / multi-zone */}
+            {/* Approach 4 — Multi-Zone (CURRENT) */}
             <div className="rounded-lg border border-gray-200 p-4 dark:border-gray-700">
               <div className="mb-2 flex items-center gap-2">
-                <span className="rounded-full bg-gray-100 px-2 py-0.5 text-xs font-semibold text-gray-600 dark:bg-gray-700 dark:text-gray-300">
-                  Alternative
+                <span className="rounded-full bg-blue-100 px-2 py-0.5 text-xs font-semibold text-blue-700 dark:bg-blue-900/40 dark:text-blue-300">
+                  Current
                 </span>
                 <h4 className="font-semibold text-gray-900 dark:text-white">
-                  Reverse Proxy / Next.js Multi-Zone
+                  Next.js Multi-Zone (Vercel Rewrites)
                 </h4>
               </div>
               <p className="mb-3 text-sm text-gray-600 dark:text-gray-400">
-                Each MFE is deployed as an independent Next.js app. A reverse proxy (Nginx,
-                Cloudflare, or Next.js rewrites) routes URL prefixes to the right app —{' '}
+                Each MFE is a separate Next.js app with its own{' '}
+                <code className="rounded bg-gray-100 px-1 text-xs dark:bg-gray-800">basePath</code>{' '}
+                and Vercel deployment. The host-shell routes{' '}
+                <code className="rounded bg-gray-100 px-1 text-xs dark:bg-gray-800">/products</code>
+                , <code className="rounded bg-gray-100 px-1 text-xs dark:bg-gray-800">/cart</code>,
+                and{' '}
                 <code className="rounded bg-gray-100 px-1 text-xs dark:bg-gray-800">
-                  /products/*
+                  /dashboard
                 </code>{' '}
-                hits the Products app,{' '}
-                <code className="rounded bg-gray-100 px-1 text-xs dark:bg-gray-800">/cart/*</code>{' '}
-                hits Cart. No JavaScript sharing between apps.
+                to the corresponding zone via{' '}
+                <code className="rounded bg-gray-100 px-1 text-xs dark:bg-gray-800">rewrites</code>{' '}
+                in{' '}
+                <code className="rounded bg-gray-100 px-1 text-xs dark:bg-gray-800">
+                  next.config.ts
+                </code>
+                . The{' '}
+                <code className="rounded bg-gray-100 px-1 text-xs dark:bg-gray-800">
+                  @platform/shell
+                </code>{' '}
+                package renders a consistent AppShell in every zone. Cross-zone state is bridged via{' '}
+                <code className="rounded bg-gray-100 px-1 text-xs dark:bg-gray-800">
+                  localStorage
+                </code>{' '}
+                (Zustand persist) and a{' '}
+                <code className="rounded bg-gray-100 px-1 text-xs dark:bg-gray-800">
+                  CrossZoneBridge
+                </code>{' '}
+                component that listens to{' '}
+                <code className="rounded bg-gray-100 px-1 text-xs dark:bg-gray-800">storage</code>{' '}
+                events for cross-tab sync.
               </p>
               <div className="grid gap-3 text-sm sm:grid-cols-2">
                 <div>
                   <p className="mb-1 font-medium text-green-700 dark:text-green-400">Strengths</p>
                   <ul className="space-y-1 text-gray-600 dark:text-gray-400">
                     <li className="flex gap-2">
-                      <span className="text-green-500">✓</span>True deployment independence with
-                      zero build coupling
+                      <span className="text-green-500">✓</span>True deployment independence — deploy
+                      one MFE without touching the host
                     </li>
                     <li className="flex gap-2">
-                      <span className="text-green-500">✓</span>Each MFE uses full Next.js — App
-                      Router, SSR, ISR, RSC, no restrictions
+                      <span className="text-green-500">✓</span>Full App Router, SSR, ISR, RSC — zero
+                      framework restrictions
                     </li>
                     <li className="flex gap-2">
-                      <span className="text-green-500">✓</span>Teams can use different Next.js
-                      versions or even different frameworks
+                      <span className="text-green-500">✓</span>Per-MFE CI/CD: change to mfe-user
+                      only triggers mfe-user pipeline
                     </li>
                     <li className="flex gap-2">
-                      <span className="text-green-500">✓</span>Vercel natively supports this via
-                      multi-zone rewrites
+                      <span className="text-green-500">✓</span>Consistent shell chrome across zones
+                      via{' '}
+                      <code className="rounded bg-gray-100 px-1 dark:bg-gray-800">
+                        @platform/shell
+                      </code>
+                    </li>
+                    <li className="flex gap-2">
+                      <span className="text-green-500">✓</span>Cart state shared via{' '}
+                      <code className="rounded bg-gray-100 px-1 dark:bg-gray-800">
+                        localStorage
+                      </code>{' '}
+                      — survives full-page zone transitions
+                    </li>
+                    <li className="flex gap-2">
+                      <span className="text-green-500">✓</span>Auth via HTTP-only cookies — shared
+                      across all zones on the same origin
                     </li>
                   </ul>
                 </div>
@@ -1205,49 +1252,135 @@ export default function HomePage() {
                   <p className="mb-1 font-medium text-red-600 dark:text-red-400">Trade-offs</p>
                   <ul className="space-y-1 text-gray-600 dark:text-gray-400">
                     <li className="flex gap-2">
-                      <span className="text-red-400">✗</span>Full-page reload on cross-MFE
-                      navigation (no SPA feel between zones)
+                      <span className="text-red-400">✗</span>Full-page reload on cross-zone
+                      navigation — no SPA transitions between zones
                     </li>
                     <li className="flex gap-2">
-                      <span className="text-red-400">✗</span>Shared state (cart, auth) must go
-                      through server-side mechanisms or cookies
+                      <span className="text-red-400">✗</span>Each zone ships its own React bundle —
+                      larger total bandwidth vs. build-time
                     </li>
                     <li className="flex gap-2">
-                      <span className="text-red-400">✗</span>Each app ships its own React bundle —
-                      larger total page weight
+                      <span className="text-red-400">✗</span>
+                      <code className="rounded bg-gray-100 px-1 dark:bg-gray-800">
+                        assetPrefix
+                      </code>{' '}
+                      must be set per-zone in Vercel for assets to load correctly through the
+                      rewrite proxy
                     </li>
                   </ul>
                 </div>
               </div>
               <p className="mt-3 text-sm text-gray-500 dark:text-gray-400">
-                <strong>Best for:</strong> Route-level independent teams where cross-MFE navigation
-                is infrequent and state sharing is light. The simplest path to true deployment
-                independence.
+                <strong>Best for:</strong> Teams that need true deployment independence with the
+                full Next.js feature set and no extra build tooling. The sweet spot between monorepo
+                build-time composition and the complexity of Module Federation.
               </p>
             </div>
 
-            {/* Recommendation */}
-            <div className="rounded-lg border-2 border-purple-400 bg-purple-50 p-4 dark:border-purple-600 dark:bg-purple-950/30">
-              <p className="mb-2 text-sm font-semibold text-purple-800 dark:text-purple-300">
-                Recommended upgrade path for this platform
+            {/* What's implemented */}
+            <div className="rounded-lg border-2 border-green-400 bg-green-50 p-4 dark:border-green-700 dark:bg-green-950/30">
+              <p className="mb-3 text-sm font-semibold text-green-800 dark:text-green-300">
+                What&apos;s implemented in this platform
               </p>
-              <p className="text-sm text-gray-700 dark:text-gray-300">
-                The current build-time composition is the right choice <em>right now</em> — it keeps
-                the full Next.js App Router feature set intact with zero extra tooling. When teams
-                grow to the point where shared release pipelines become a bottleneck, the best next
-                step is <strong>Next.js Multi-Zone</strong>: deploy each MFE app independently,
-                route via Vercel rewrites, and use the existing{' '}
-                <code className="rounded bg-gray-100 px-1 text-xs dark:bg-gray-800">
-                  @platform/event-bus
-                </code>{' '}
-                +{' '}
-                <code className="rounded bg-gray-100 px-1 text-xs dark:bg-gray-800">
-                  localStorage
-                </code>{' '}
-                for cross-zone state. This gives deployment independence with no framework
-                trade-offs. Module Federation becomes worth revisiting only once MF 2.0&apos;s App
-                Router + RSC story is production-proven.
-              </p>
+              <ul className="space-y-2 text-sm text-gray-700 dark:text-gray-300">
+                <li className="flex items-start gap-2">
+                  <span className="mt-0.5 text-green-500">✓</span>
+                  <span>
+                    <strong>Host-shell rewrites</strong> —{' '}
+                    <code className="rounded bg-gray-100 px-1 text-xs dark:bg-gray-800">
+                      next.config.ts
+                    </code>{' '}
+                    routes{' '}
+                    <code className="rounded bg-gray-100 px-1 text-xs dark:bg-gray-800">
+                      /products
+                    </code>
+                    ,{' '}
+                    <code className="rounded bg-gray-100 px-1 text-xs dark:bg-gray-800">/cart</code>
+                    ,{' '}
+                    <code className="rounded bg-gray-100 px-1 text-xs dark:bg-gray-800">
+                      /dashboard
+                    </code>{' '}
+                    to independent zone deployments via{' '}
+                    <code className="rounded bg-gray-100 px-1 text-xs dark:bg-gray-800">
+                      NEXT_PUBLIC_MFE_*_URL
+                    </code>{' '}
+                    env vars
+                  </span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="mt-0.5 text-green-500">✓</span>
+                  <span>
+                    <strong>@platform/shell</strong> — shared{' '}
+                    <code className="rounded bg-gray-100 px-1 text-xs dark:bg-gray-800">
+                      AppShell
+                    </code>{' '}
+                    and{' '}
+                    <code className="rounded bg-gray-100 px-1 text-xs dark:bg-gray-800">
+                      CrossZoneBridge
+                    </code>{' '}
+                    package consumed by all four zones; nav uses plain{' '}
+                    <code className="rounded bg-gray-100 px-1 text-xs dark:bg-gray-800">
+                      &lt;a&gt;
+                    </code>{' '}
+                    tags for correct cross-zone navigation
+                  </span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="mt-0.5 text-green-500">✓</span>
+                  <span>
+                    <strong>Cross-zone cart state</strong> — Zustand persists to{' '}
+                    <code className="rounded bg-gray-100 px-1 text-xs dark:bg-gray-800">
+                      localStorage
+                    </code>{' '}
+                    (key:{' '}
+                    <code className="rounded bg-gray-100 px-1 text-xs dark:bg-gray-800">
+                      platform-cart
+                    </code>
+                    ); zone entry re-hydrates automatically;{' '}
+                    <code className="rounded bg-gray-100 px-1 text-xs dark:bg-gray-800">
+                      CrossZoneBridge
+                    </code>{' '}
+                    syncs across open tabs via the{' '}
+                    <code className="rounded bg-gray-100 px-1 text-xs dark:bg-gray-800">
+                      storage
+                    </code>{' '}
+                    event
+                  </span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="mt-0.5 text-green-500">✓</span>
+                  <span>
+                    <strong>Auth across zones</strong> — JWT in an HTTP-only cookie set by{' '}
+                    <code className="rounded bg-gray-100 px-1 text-xs dark:bg-gray-800">
+                      /api/auth/login
+                    </code>
+                    ; mfe-user zone has its own edge middleware that checks the cookie and redirects
+                    to{' '}
+                    <code className="rounded bg-gray-100 px-1 text-xs dark:bg-gray-800">
+                      /login
+                    </code>{' '}
+                    if absent
+                  </span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="mt-0.5 text-green-500">✓</span>
+                  <span>
+                    <strong>Independent CI/CD</strong> —{' '}
+                    <code className="rounded bg-gray-100 px-1 text-xs dark:bg-gray-800">
+                      dorny/paths-filter
+                    </code>{' '}
+                    in GitHub Actions ensures a commit to{' '}
+                    <code className="rounded bg-gray-100 px-1 text-xs dark:bg-gray-800">
+                      apps/mfe-user/
+                    </code>{' '}
+                    only triggers the mfe-user job; each app has its own{' '}
+                    <code className="rounded bg-gray-100 px-1 text-xs dark:bg-gray-800">
+                      vercel.json
+                    </code>{' '}
+                    for independent Vercel deployments
+                  </span>
+                </li>
+              </ul>
             </div>
           </CardBody>
         </Card>

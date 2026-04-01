@@ -34,29 +34,37 @@ const steps = [
   },
   {
     number: 2,
-    title: 'Host Shell Composition (App Router)',
-    tech: ['Next.js 15', 'React 19', 'Dynamic Imports'],
+    title: 'Next.js Multi-Zone — Independent Deployments',
+    tech: ['Next.js Multi-Zone', 'Vercel Rewrites', 'basePath', 'assetPrefix'],
     description:
-      "Instead of Module Federation, we use Next.js App Router composition. The host shell (port 3000) owns the layout, routing, and navigation. Each microfrontend is imported as a React component and rendered within the host's page routes using next/dynamic for code splitting.",
+      "Each MFE is a completely separate Next.js application deployed independently. The host shell owns the canonical domain and uses Next.js rewrites to transparently proxy /products, /cart, and /dashboard to each zone's deployment. The browser always sees one domain — zone switching is a full-page navigation.",
     details: [
-      'Host shell owns the AppShell (navbar + sidebar), routing, and providers (QueryClient, Theme, Auth)',
-      'Each MFE is wrapped in a dynamic() import — only loaded when the user navigates to that route',
-      'MFEs are independently developed in their own apps/ directory with their own next.config.ts',
-      'transpilePackages in next.config.ts compiles shared workspace packages on-the-fly',
+      'host-shell rewrites /products → mfe-products, /cart → mfe-cart, /dashboard → mfe-user via next.config.ts rewrites()',
+      'Each zone sets basePath (/products, /cart, /dashboard) so its pages serve at the correct URL prefix',
+      "assetPrefix points _next/static asset URLs at the zone's own origin — required when HTML is proxied through the host",
+      '@platform/shell package provides AppShell + CrossZoneBridge consumed by all 4 zones for consistent chrome',
+      'Cross-zone navigation uses plain <a> tags — next/link only does SPA transitions within the same zone',
+      'Zone URLs come from NEXT_PUBLIC_MFE_*_URL env vars — host shell never needs a redeploy when an MFE ships',
     ],
-    diagram: `┌──────────────────────────────────────────────┐
-│            Host Shell (port 3000)            │
-│  ┌────────────────────────────────────────┐  │
-│  │  AppShell (Navbar + Sidebar + Layout)  │  │
-│  ├────────────────────────────────────────┤  │
-│  │                                        │  │
-│  │   /products ──► dynamic(ProductsMFE)   │  │
-│  │   /cart     ──► dynamic(CartMFE)       │  │
-│  │   /dashboard──► dynamic(UserMFE)       │  │
-│  │                                        │  │
-│  │  Each MFE code-split, loaded on demand │  │
-│  └────────────────────────────────────────┘  │
-└──────────────────────────────────────────────┘`,
+    diagram: `  Browser → https://yourapp.com/products/42
+                      │
+            host-shell rewrites()
+                      │
+                      ▼
+       https://mfe-products.vercel.app/products/42
+
+┌─────────────────────────────────────────────┐
+│  host-shell  (owns / /login /api/auth/*)    │
+│  rewrites:                                  │
+│    /products/* → mfe-products:3001          │
+│    /cart/*     → mfe-cart:3002              │
+│    /dashboard/*→ mfe-user:3003              │
+├──────────┬──────────┬───────────────────────┤
+│mfe-products│mfe-cart│mfe-user               │
+│basePath:   │basePath:│basePath:              │
+│/products   │/cart    │/dashboard             │
+│own deploy  │own deploy│own deploy            │
+└──────────┴──────────┴───────────────────────┘`,
   },
   {
     number: 3,
@@ -256,40 +264,38 @@ const steps = [
   },
   {
     number: 10,
-    title: 'CI/CD & Infrastructure',
-    tech: ['GitHub Actions', 'Docker', 'Kubernetes', 'Terraform', 'AWS'],
+    title: 'CI/CD — Per-App Conditional Pipelines',
+    tech: ['GitHub Actions', 'dorny/paths-filter', 'Turborepo --filter', 'Vercel', 'Docker'],
     description:
-      'From git push to production: GitHub Actions runs lint, tests, and builds. On main, Docker multi-stage builds create minimal images pushed to AWS ECR. Kubernetes deployments run 3 replicas per app with health probes, behind a TLS Ingress. Terraform provisions all cloud resources.',
+      'Each MFE has its own independent CI job that only runs when its files actually changed. dorny/paths-filter diffs the git commit range and sets boolean outputs. Downstream jobs use these to skip unchanged apps entirely — changing one line in mfe-user triggers only the mfe-user pipeline.',
     details: [
-      'CI pipeline: Lint → Format Check → Test → Build → Storybook/Chromatic (PRs) → Docker Build + Push (main)',
-      'Docker: 4-stage build (base → deps → builder → runner), Alpine base, Next.js standalone output, non-root user',
-      'Kubernetes: 3-replica Deployments, resource limits (500m CPU, 512Mi RAM), liveness/readiness probes',
-      'Terraform: 4 ECR repos, private S3 bucket, CloudFront CDN with HTTPS, S3 backend for state',
-      'Each MFE gets its own Docker image, K8s Deployment, and ECR repository',
+      'changes job runs dorny/paths-filter@v3 — diffs the actual git commit range and produces boolean outputs per path group',
+      "Each app job has: if: needs.changes.outputs.mfe-user == 'true' || needs.changes.outputs.shared == 'true'",
+      'Turborepo --filter=@platform/mfe-user scopes lint/test/build to only that app and its workspace deps',
+      'Shared packages (packages/**) trigger all apps — a change to @platform/shell rebuilds all 4 zones',
+      'Each zone has its own vercel.json with buildCommand: npx turbo build --filter=@platform/mfe-products',
+      'Storybook/Chromatic job only runs when packages/ui/** changes, not on every PR',
     ],
-    diagram: `  git push ──► GitHub Actions
+    diagram: `  git push (changed: apps/mfe-user/dashboard.tsx)
                     │
-         ┌──────────┼──────────┐
-         ▼          ▼          ▼
-       Lint       Test       Build
-         │          │          │
-         └──────────┼──────────┘
+              changes job
+              (dorny/paths-filter)
                     │
-              (main branch)
-                    │
-         ┌──────────┼──────────┐
-         ▼          ▼          ▼
-      Docker     Docker     Docker
-    host-shell  products   cart/user
-         │          │          │
-         └──────────┼──────────┘
-                    ▼
-              AWS ECR Push
-                    │
-                    ▼
-           Kubernetes (3 replicas)
-           + CloudFront CDN
-           + Terraform IaC`,
+      ┌─────────────┼──────────────────┐
+      │             │                  │
+  mfe-user=true  others=false    shared=false
+      │             │
+      ▼             ▼
+  [RUNS]        [SKIPPED]
+  turbo lint    host-shell
+  turbo test    mfe-products
+  turbo build   mfe-cart
+  --filter=
+  @platform/mfe-user
+      │
+      ▼
+  Vercel deploys
+  only mfe-user`,
   },
 ];
 

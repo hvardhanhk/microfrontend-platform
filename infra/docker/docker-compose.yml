@@ -1,5 +1,10 @@
 version: '3.8'
 
+# Multi-Zone: each service is independently buildable and deployable.
+# The host-shell owns the canonical domain and rewrites zone routes to the
+# respective services.  Set NEXT_PUBLIC_MFE_*_URL to the service names so the
+# rewrite destinations resolve inside the Docker network.
+
 services:
   host-shell:
     build:
@@ -11,6 +16,13 @@ services:
       - "3000:3000"
     environment:
       - NODE_ENV=production
+      - NEXT_PUBLIC_MFE_PRODUCTS_URL=http://mfe-products:3000
+      - NEXT_PUBLIC_MFE_CART_URL=http://mfe-cart:3000
+      - NEXT_PUBLIC_MFE_USER_URL=http://mfe-user:3000
+    depends_on:
+      - mfe-products
+      - mfe-cart
+      - mfe-user
 
   mfe-products:
     build:
@@ -20,6 +32,10 @@ services:
         APP_NAME: mfe-products
     ports:
       - "3001:3000"
+    environment:
+      - NODE_ENV=production
+      # Assets are proxied through the host on the canonical domain in prod,
+      # so no assetPrefix override needed when running behind the host-shell.
 
   mfe-cart:
     build:
@@ -29,6 +45,8 @@ services:
         APP_NAME: mfe-cart
     ports:
       - "3002:3000"
+    environment:
+      - NODE_ENV=production
 
   mfe-user:
     build:
@@ -38,3 +56,6 @@ services:
         APP_NAME: mfe-user
     ports:
       - "3003:3000"
+    environment:
+      - NODE_ENV=production
+      - NEXT_PUBLIC_HOST_URL=http://host-shell:3000

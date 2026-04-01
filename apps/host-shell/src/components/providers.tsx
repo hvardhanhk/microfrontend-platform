@@ -1,5 +1,6 @@
 'use client';
 
+import { CrossZoneBridge } from '@platform/shell';
 import { ThemeProvider, ToastProvider } from '@platform/ui';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import type { ReactNode } from 'react';
@@ -42,6 +43,7 @@ export function Providers({ children }: { children: ReactNode }) {
       <QueryClientProvider client={queryClient}>
         <ToastProvider>
           <InitFeatureFlags />
+          <CrossZoneBridge />
           {children}
         </ToastProvider>
       </QueryClientProvider>

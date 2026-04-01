@@ -3,37 +3,78 @@
 import { useEventBus } from '@platform/event-bus';
 import { useCartStore } from '@platform/shared-state';
 import { Navbar, Sidebar, Avatar, Button } from '@platform/ui';
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
 import { useEffect, useState, type ReactNode } from 'react';
 
-const navItems = [
+/**
+ * Shared application shell — rendered by every zone (host-shell, mfe-products,
+ * mfe-cart, mfe-user) so the nav / sidebar appear consistently regardless of
+ * which Next.js app is currently serving the page.
+ *
+ * Multi-zone navigation rules
+ * ───────────────────────────
+ * In Next.js Multi-Zone every top-level route belongs to a different deployed
+ * app.  Navigating between them causes a full-page reload (the browser leaves
+ * one zone and enters another).  All nav items therefore use plain <a> tags —
+ * Next.js <Link> only does client-side transitions *within* the same zone.
+ *
+ * The Sidebar component in @platform/ui already renders plain <a> tags, so
+ * cross-zone navigation works out of the box.
+ *
+ * Cross-zone auth check
+ * ─────────────────────
+ * `fetch('/api/auth/me')` always hits the host-shell zone because the browser
+ * sees the canonical domain (e.g. yourapp.vercel.app) regardless of which zone
+ * served the page HTML.  Set NEXT_PUBLIC_HOST_URL for isolated local MFE dev.
+ *
+ * Cart badge
+ * ──────────
+ * Zustand's persist middleware writes cart state to localStorage under the key
+ * "platform-cart".  On zone entry (full-page load) Zustand re-hydrates from
+ * localStorage automatically, so the badge count is always correct.  Same-page
+ * mutations also update the badge instantly via the EventBus.  Cross-tab /
+ * cross-zone live sync is handled by CrossZoneBridge.
+ */
+
+const HOST_URL = process.env.NEXT_PUBLIC_HOST_URL ?? '';
+
+const NAV_ITEMS = [
   { label: 'Home', href: '/' },
   { label: 'Products', href: '/products' },
   { label: 'Cart', href: '/cart' },
   { label: 'Dashboard', href: '/dashboard' },
 ];
 
-/**
- * Application shell — persistent layout wrapping all MFE pages.
- * Contains the nav, sidebar, and listens for cross-MFE notifications.
- */
 export function AppShell({ children }: { children: ReactNode }) {
-  const pathname = usePathname();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
-  const cartItemCount = useCartStore((s) => s.cart?.itemCount ?? 0);
 
-  // Check auth status once on mount — subsequent changes (login/logout) do full navigations
+  // Active-path detection: usePathname() returns a path relative to the
+  // zone's basePath, so we read window.location.pathname for the real URL.
+  const [pathname, setPathname] = useState('/');
   useEffect(() => {
-    fetch('/api/auth/me', { credentials: 'include' })
+    setPathname(window.location.pathname);
+  }, []);
+
+  // Cart count — always start at 0 to match server render (no localStorage on server).
+  // useEffect syncs from Zustand after hydration; EventBus keeps it live for
+  // same-page mutations; CrossZoneBridge handles cross-tab updates.
+  const storeCount = useCartStore((s) => s.cart?.itemCount ?? 0);
+  const [cartItemCount, setCartItemCount] = useState(0);
+  useEventBus('cart:count-changed', ({ count }) => setCartItemCount(count));
+
+  // Sync badge once Zustand finishes re-hydrating from localStorage on the client.
+  useEffect(() => {
+    setCartItemCount(storeCount);
+  }, [storeCount]);
+
+  useEffect(() => {
+    fetch(`${HOST_URL}/api/auth/me`, { credentials: 'include' })
       .then((res) => setIsLoggedIn(res.ok))
       .catch(() => setIsLoggedIn(false));
   }, []);
 
-  // Listen for cross-MFE notifications (demonstrates event bus)
   useEventBus('notification:show', (payload) => {
-    console.log('[Host] Notification:', payload);
+    console.log('[Shell] Notification:', payload);
   });
 
   return (
@@ -42,7 +83,7 @@ export function AppShell({ children }: { children: ReactNode }) {
         <Sidebar
           isOpen={sidebarOpen}
           onClose={() => setSidebarOpen(false)}
-          items={navItems.map((item) => ({
+          items={NAV_ITEMS.map((item) => ({
             label: item.label,
             href: item.href,
             isActive:
@@ -54,7 +95,7 @@ export function AppShell({ children }: { children: ReactNode }) {
       <div className="flex flex-1 flex-col">
         <Navbar
           logo={
-            <Link href="/" className="flex items-center gap-2 text-xl font-bold text-brand-600">
+            <a href="/" className="flex items-center gap-2 text-xl font-bold text-brand-600">
               <svg className="h-8 w-8" viewBox="0 0 32 32" fill="currentColor">
                 <rect x="2" y="2" width="12" height="12" rx="2" />
                 <rect x="18" y="2" width="12" height="12" rx="2" opacity="0.7" />
@@ -62,7 +103,7 @@ export function AppShell({ children }: { children: ReactNode }) {
                 <rect x="18" y="18" width="12" height="12" rx="2" opacity="0.4" />
               </svg>
               Platform
-            </Link>
+            </a>
           }
           onMenuClick={isLoggedIn ? () => setSidebarOpen(true) : undefined}
           actions={
@@ -71,7 +112,7 @@ export function AppShell({ children }: { children: ReactNode }) {
                 <div className="h-8 w-8" />
               ) : isLoggedIn ? (
                 <>
-                  <Link
+                  <a
                     href="/cart"
                     className="relative rounded-lg p-2 text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800"
                   >
@@ -88,15 +129,15 @@ export function AppShell({ children }: { children: ReactNode }) {
                         {cartItemCount > 99 ? '99+' : cartItemCount}
                       </span>
                     )}
-                  </Link>
-                  <Link href="/dashboard">
+                  </a>
+                  <a href="/dashboard">
                     <Avatar name="Alex Johnson" size="sm" />
-                  </Link>
+                  </a>
                 </>
               ) : (
-                <Link href="/login">
+                <a href="/login">
                   <Button size="sm">Sign In</Button>
-                </Link>
+                </a>
               )}
             </div>
           }

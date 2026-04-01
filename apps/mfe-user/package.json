@@ -11,6 +11,7 @@
     "clean": "rm -rf .next .turbo"
   },
   "dependencies": {
+    "@platform/shell": "*",
     "@platform/ui": "*",
     "@platform/event-bus": "*",
     "@platform/types": "*",

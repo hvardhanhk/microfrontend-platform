@@ -2,91 +2,69 @@
 
 import { EventBus } from '@platform/event-bus';
 import {
-  Card,
-  CardBody,
-  CardHeader,
-  Button,
-  Input,
-  Avatar,
-  Badge,
-  Tabs,
-  TabList,
-  Tab,
-  TabPanel,
-  Switch,
   Accordion,
   AccordionItem,
+  Avatar,
+  Badge,
+  Button,
+  Card,
+  CardBody,
+  Input,
+  Switch,
+  Tab,
+  TabList,
+  TabPanel,
+  Tabs,
 } from '@platform/ui';
+import { useTheme } from '@platform/ui';
 import { formatCurrency, formatDate } from '@platform/utils';
-import { useState } from 'react';
 
-const ORDERS = [
-  { id: 'ord_1', date: '2025-03-20', total: 259.97, status: 'delivered' as const },
-  { id: 'ord_2', date: '2025-03-15', total: 149.99, status: 'shipped' as const },
+/**
+ * UserDashboard — auth is guaranteed by the mfe-user middleware which checks
+ * the access_token cookie before this page is served.  No client-side login
+ * gate needed here.
+ */
+
+const MOCK_ORDERS = [
+  { id: 'ord_1', date: '2025-03-20', total: 259.97, status: 'delivered' as const, items: 3 },
+  { id: 'ord_2', date: '2025-03-15', total: 149.99, status: 'shipped' as const, items: 1 },
+  { id: 'ord_3', date: '2025-02-28', total: 89.98, status: 'delivered' as const, items: 2 },
 ];
 
+// auth/logout API lives on the host-shell zone; the cookie is shared across
+// the whole origin so the call works from any zone.
+const HOST_URL = process.env.NEXT_PUBLIC_HOST_URL ?? '';
+
 export function UserDashboard() {
-  const [loggedIn, setLoggedIn] = useState(false);
-  const [loading, setLoading] = useState(false);
-
-  const handleLogin = async () => {
-    setLoading(true);
-    await new Promise((r) => setTimeout(r, 500));
-    setLoggedIn(true);
-    setLoading(false);
-    EventBus.publish('auth:login', {
-      user: {
-        id: 'user_1',
-        email: 'demo@platform.io',
-        name: 'Alex',
-        role: 'customer',
-        preferences: { theme: 'system', language: 'en', currency: 'USD', notifications: true },
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      },
-    });
-  };
-
-  if (!loggedIn) {
-    return (
-      <div className="mx-auto max-w-md py-20">
-        <Card>
-          <CardHeader>
-            <h2 className="text-xl font-bold text-center">Sign In</h2>
-          </CardHeader>
-          <CardBody className="space-y-4">
-            <Input label="Email" type="email" placeholder="you@example.com" />
-            <Input label="Password" type="password" />
-            <Button className="w-full" onClick={handleLogin} isLoading={loading}>
-              Sign In (Demo)
-            </Button>
-          </CardBody>
-        </Card>
-      </div>
-    );
-  }
+  const { resolvedTheme, setTheme } = useTheme();
 
   return (
     <div className="space-y-6">
-      <Card className="flex flex-col sm:flex-row items-center gap-6 p-6">
+      <Card className="flex flex-col items-center p-8 sm:flex-row sm:items-start sm:gap-6">
         <Avatar name="Alex Johnson" size="lg" />
-        <div>
-          <h1 className="text-2xl font-bold">Alex</h1>
+        <div className="mt-4 text-center sm:mt-0 sm:text-left">
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Alex Johnson</h1>
           <p className="text-gray-500">demo@platform.io</p>
-          <Badge variant="info" className="mt-1">
-            customer
-          </Badge>
+          <div className="mt-2 flex gap-2 justify-center sm:justify-start">
+            <Badge variant="info">customer</Badge>
+            <Badge variant="success">Active</Badge>
+          </div>
         </div>
-        <Button
-          variant="outline"
-          className="sm:ml-auto"
-          onClick={() => {
-            setLoggedIn(false);
-            EventBus.publish('auth:logout', undefined);
-          }}
-        >
-          Sign Out
-        </Button>
+        <div className="sm:ml-auto mt-4 sm:mt-0">
+          <Button
+            variant="outline"
+            onClick={async () => {
+              await fetch(`${HOST_URL}/api/auth/logout`, {
+                method: 'POST',
+                credentials: 'include',
+              });
+              EventBus.publish('auth:logout', undefined);
+              window.location.href = '/login';
+            }}
+          >
+            Sign Out
+          </Button>
+        </div>
       </Card>
 
       <Tabs defaultIndex={0}>
@@ -96,34 +74,44 @@ export function UserDashboard() {
           <Tab>Settings</Tab>
         </TabList>
         <TabPanel>
-          <div className="grid gap-4 sm:grid-cols-2 mt-4">
+          <div className="grid gap-4 sm:grid-cols-3 mt-4">
             <Card>
               <CardBody className="text-center">
-                <p className="text-3xl font-bold text-brand-600">{ORDERS.length}</p>
-                <p className="text-sm text-gray-500">Orders</p>
+                <p className="text-3xl font-bold text-brand-600">{MOCK_ORDERS.length}</p>
+                <p className="text-sm text-gray-500">Total Orders</p>
               </CardBody>
             </Card>
             <Card>
               <CardBody className="text-center">
                 <p className="text-3xl font-bold text-brand-600">
-                  {formatCurrency(ORDERS.reduce((s, o) => s + o.total, 0))}
+                  {formatCurrency(MOCK_ORDERS.reduce((s, o) => s + o.total, 0))}
                 </p>
-                <p className="text-sm text-gray-500">Spent</p>
+                <p className="text-sm text-gray-500">Total Spent</p>
+              </CardBody>
+            </Card>
+            <Card>
+              <CardBody className="text-center">
+                <p className="text-3xl font-bold text-brand-600">4.8</p>
+                <p className="text-sm text-gray-500">Avg Rating</p>
               </CardBody>
             </Card>
           </div>
         </TabPanel>
         <TabPanel>
           <div className="mt-4 space-y-3">
-            {ORDERS.map((o) => (
-              <Card key={o.id} className="flex items-center justify-between p-4">
+            {MOCK_ORDERS.map((order) => (
+              <Card key={order.id} className="flex items-center justify-between p-4">
                 <div>
-                  <p className="font-medium">{o.id}</p>
-                  <p className="text-sm text-gray-500">{formatDate(o.date)}</p>
+                  <p className="font-medium">{order.id}</p>
+                  <p className="text-sm text-gray-500">
+                    {formatDate(order.date)} · {order.items} items
+                  </p>
                 </div>
                 <div className="text-right">
-                  <p className="font-semibold">{formatCurrency(o.total)}</p>
-                  <Badge variant={o.status === 'delivered' ? 'success' : 'info'}>{o.status}</Badge>
+                  <p className="font-semibold">{formatCurrency(order.total)}</p>
+                  <Badge variant={order.status === 'delivered' ? 'success' : 'info'}>
+                    {order.status}
+                  </Badge>
                 </div>
               </Card>
             ))}
@@ -134,15 +122,30 @@ export function UserDashboard() {
             <Accordion>
               <AccordionItem title="Appearance">
                 <div className="flex items-center justify-between py-2">
-                  <p className="font-medium">Dark Mode</p>
-                  <Switch checked={false} onChange={() => {}} />
+                  <div>
+                    <p className="font-medium">Dark Mode</p>
+                    <p className="text-sm text-gray-500">Toggle dark mode theme</p>
+                  </div>
+                  <Switch
+                    checked={resolvedTheme === 'dark'}
+                    onChange={(checked) => setTheme(checked ? 'dark' : 'light')}
+                  />
                 </div>
               </AccordionItem>
-              <AccordionItem title="Profile">
-                <div className="space-y-3 py-2">
-                  <Input label="Name" defaultValue="Alex Johnson" />
-                  <Input label="Email" defaultValue="demo@platform.io" />
-                  <Button>Save</Button>
+              <AccordionItem title="Notifications">
+                <div className="flex items-center justify-between py-2">
+                  <div>
+                    <p className="font-medium">Email Notifications</p>
+                    <p className="text-sm text-gray-500">Receive order updates via email</p>
+                  </div>
+                  <Switch checked={true} onChange={() => {}} />
+                </div>
+              </AccordionItem>
+              <AccordionItem title="Account">
+                <div className="space-y-4 py-2">
+                  <Input label="Display Name" defaultValue="Alex Johnson" />
+                  <Input label="Email" type="email" defaultValue="demo@platform.io" />
+                  <Button>Update Profile</Button>
                 </div>
               </AccordionItem>
             </Accordion>

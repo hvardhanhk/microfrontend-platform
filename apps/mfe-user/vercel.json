@@ -1,0 +1,7 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": "nextjs",
+  "installCommand": "npm install",
+  "buildCommand": "npx turbo build --filter=@platform/mfe-user",
+  "outputDirectory": "apps/mfe-user/.next"
+}

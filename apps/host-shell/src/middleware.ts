@@ -31,7 +31,9 @@ export function middleware(request: NextRequest) {
   response.headers.set('x-currency', currencyMap[country] || 'USD');
 
   // 2. Protected route check
-  const protectedPaths = ['/dashboard', '/orders', '/settings'];
+  // /dashboard, /orders, /settings are now served by the mfe-user zone which
+  // runs its own middleware.  The host-shell only guards routes it owns.
+  const protectedPaths: string[] = [];
   const isProtected = protectedPaths.some((p) => request.nextUrl.pathname.startsWith(p));
 
   if (isProtected) {
