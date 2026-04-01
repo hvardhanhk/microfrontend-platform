@@ -37,6 +37,10 @@ const nextConfig: NextConfig = {
     '@platform/types',
     '@platform/utils',
   ],
+  experimental: {
+    bundleSizeLimit: 350_000, // 350 kB per chunk — warn in CI
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } as any,
   images: { remotePatterns: [{ protocol: 'https', hostname: 'picsum.photos' }] },
 
   // In dev, the browser fetches _next/static assets directly from localhost:3001

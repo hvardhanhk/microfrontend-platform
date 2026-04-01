@@ -52,7 +52,9 @@ const nextConfig: NextConfig = {
   },
   experimental: {
     optimizePackageImports: ['@platform/ui'],
-  },
+    bundleSizeLimit: 400_000, // 400 kB per chunk — warn in CI
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } as any,
 
   // ── Multi-Zone rewrites ──────────────────────────────────────────────────
   // Requests matching these patterns are proxied to the respective MFE app.

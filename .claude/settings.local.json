@@ -21,7 +21,16 @@
       "WebFetch(domain:claude.ai)",
       "Bash(ls /Users/hvardhan/work/microfrontend-platform/apps/host-shell/eslint*)",
       "Bash(ls /Users/hvardhan/work/microfrontend-platform/eslint*)",
-      "Bash(grep -v \"^--$\")"
+      "Bash(grep -v \"^--$\")",
+      "Bash(npm run:*)",
+      "Bash(node -e \"console.log\\(require\\(''/Users/hvardhan/work/microfrontend-platform/node_modules/next/package.json''\\).version\\)\")",
+      "Bash(node -e \"const p = require\\(''@next/eslint-plugin-next''\\); console.log\\(Object.keys\\(p\\)\\)\")",
+      "Bash(node -e \"const p = require\\(''@next/eslint-plugin-next''\\); console.log\\(JSON.stringify\\(Object.keys\\(p.flatConfig\\), null, 2\\)\\)\")",
+      "Bash(node -e \"const p = require\\(''''@next/eslint-plugin-next''''\\); console.log\\(JSON.stringify\\(p.flatConfig.coreWebVitals, null, 2\\)\\)\")",
+      "Bash(node -e \":*)",
+      "Bash(__NEW_LINE_4ada26c6cd7c6072__ node -e \":*)",
+      "Bash(node -e \"const c = require\\(''eslint-config-next''\\); console.log\\(Object.keys\\(c\\)\\)\")",
+      "Bash(node -e \"const p = require\\(''@next/eslint-plugin-next''\\); console.log\\(!!p.flatConfig\\)\")"
     ]
   }
 }

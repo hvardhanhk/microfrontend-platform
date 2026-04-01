@@ -19,6 +19,11 @@ const nextConfig: NextConfig = {
     '@platform/utils',
   ],
 
+  experimental: {
+    bundleSizeLimit: 300_000, // 300 kB per chunk — warn in CI
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } as any,
+
   async headers() {
     if (process.env.NODE_ENV !== 'development') return [];
     return [

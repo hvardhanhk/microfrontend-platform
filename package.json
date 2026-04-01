@@ -7,6 +7,11 @@
   ],
   "scripts": {
     "dev": "turbo dev",
+    "dev:shell": "turbo dev --filter=@platform/host-shell",
+    "dev:products": "turbo dev --filter=@platform/host-shell --filter=@platform/mfe-products",
+    "dev:cart": "turbo dev --filter=@platform/host-shell --filter=@platform/mfe-cart",
+    "dev:user": "turbo dev --filter=@platform/host-shell --filter=@platform/mfe-user",
+    "dev:all": "turbo dev",
     "build": "turbo build",
     "lint": "turbo lint",
     "test": "turbo test",
@@ -14,6 +19,9 @@
     "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,md}\"",
     "clean": "turbo clean && rm -rf node_modules",
     "storybook": "turbo storybook --filter=@platform/ui",
+    "analyze": "ANALYZE=true turbo build",
+    "analyze:shell": "ANALYZE=true turbo build --filter=@platform/host-shell",
+    "analyze:products": "ANALYZE=true turbo build --filter=@platform/mfe-products",
     "prepare": "husky"
   },
   "devDependencies": {

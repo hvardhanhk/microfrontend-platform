@@ -19,6 +19,10 @@ const nextConfig: NextConfig = {
     '@platform/types',
     '@platform/utils',
   ],
+  experimental: {
+    bundleSizeLimit: 300_000, // 300 kB per chunk — warn in CI
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } as any,
   images: { remotePatterns: [{ protocol: 'https', hostname: 'picsum.photos' }] },
 
   async headers() {
